@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://wyddy.tech/</loc>
+  </url>
+  <url>
+    <loc>https://wyddy.tech/case-netwho.html</loc>
+  </url>
+  <url>
+    <loc>https://wyddy.tech/case-video-pipeline.html</loc>
+  </url>
+  <url>
+    <loc>https://wyddy.tech/llms.txt</loc>
+  </url>
+  <url>
+    <loc>https://wyddy.tech/.well-known/agent-skills/index.json</loc>
+  </url>
+</urlset>

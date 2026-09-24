@@ -1,0 +1,805 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0c0c0b">
+<title>Case · Browd — an AI agent that operates your browser — Daniil Makeev</title>
+<meta name="description" content="Case study: Browd — an open-source AI agent that operates your browser. Agent runtime on LangGraph.js plan-and-execute, tab isolation, prompt-injection guards, shipped to the Chrome Web Store.">
+<link rel="canonical" href="https://wyddy.tech/case-browd.html">
+<link rel="alternate" type="text/markdown" href="/case-browd.html.md" title="Markdown version">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://wyddy.tech/case-browd.html">
+<meta property="og:title" content="Case · Browd — Daniil Makeev">
+<meta property="og:description" content="An open-source AI agent that runs multi-step tasks in your own browser. Rebuilt agent runtime on LangGraph.js, tab isolation, prompt-injection guards, Chrome Web Store.">
+<meta property="og:image" content="https://wyddy.tech/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Case · Browd — Daniil Makeev">
+<meta name="twitter:description" content="An open-source AI agent that runs multi-step tasks in your own browser. LangGraph.js plan-and-execute, tab isolation, prompt-injection guards, Chrome Web Store.">
+<meta name="twitter:image" content="https://wyddy.tech/assets/og-image.png">
+<link rel="icon" type="image/svg+xml" href="./assets/favicon-light.svg">
+
+<link rel="preload" href="assets/fonts/Jost-wght.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* Jost (OFL, self-hosted, Latin subset, variable 100–900). Decision 2026-09-07: webfont allowed; see auto-docs DESIGN.md → Typography. */
+@font-face { font-family: "Jost"; font-weight: 100 900; font-display: swap; src: url(assets/fonts/Jost-wght.woff2) format("woff2"); }
+@font-face { font-family: "Jost"; font-weight: 100 900; font-style: italic; font-display: swap; src: url(assets/fonts/Jost-Italic-wght.woff2) format("woff2"); }
+</style>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0c0c0b;
+  --text: #f2f0eb;
+  --muted: #6a6860;
+  --rule: #1e1e1c;
+  --accent: oklch(83% 0.22 95);
+  --sans: 'Jost', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --serif: var(--sans);
+  --faint: #8a8780;
+
+  --step--1: clamp(14.5px, 0.7rem + 0.65vw, 17px);
+  --step-0:  clamp(18px, 1.08rem + 0.97vw, 23.5px);
+  --step-1:  clamp(26px, 1.68rem + 2.16vw, 38px);
+  --step-2:  clamp(43px, 3rem + 2.4vw, 67px);
+  --step-3:  clamp(62px, 4.8rem + 3.6vw, 110px);
+
+  --sp-xs: clamp(10px, 1.2vw, 17px);
+  --sp-s:  clamp(17px, 2.4vw, 26px);
+  --sp-m:  clamp(26px, 4.2vw, 53px);
+  --sp-l:  clamp(43px, 6.6vw, 86px);
+  --sp-xl: clamp(62px, 8.4vw, 132px);
+
+  --pad-x: clamp(24px, 6vw, 86px);
+  --body-max: min(816px, 92vw);
+
+  --illus-bg: #111110;
+  --pill-bg: #161614;
+  --pill-text: #b0ada6;
+  --axis: #b0ada6;
+}
+
+html[data-theme="light"] {
+  --bg: #faf4ed;
+  --text: #26211c;
+  --muted: #7c756c;
+  --rule: #efe5da;
+  --accent: #2c2620;
+  --faint: #5c5650;
+  --illus-bg: #f2e9e1;
+  --pill-bg: #f1e8d9;
+  --pill-text: #45423b;
+  --axis: #7c756c;
+}
+html[data-theme="light"] { color-scheme: light; }
+html[data-theme="light"] body { background: var(--bg); color: var(--text); }
+html[data-theme="light"] .prose,
+html[data-theme="light"] .step-body { color: #5c5650; }
+html[data-theme="light"] .takeaway { background: rgba(60,40,20,0.05); }
+html[data-theme="light"] .takeaway-body { color: #26211c; }
+html[data-theme="light"] .btn-primary { background: #26211c; color: #faf4ed; }
+html[data-theme="light"] .case-footer .cta { background: #26211c; color: #faf4ed; }
+html[data-theme="light"] .diagram .node-bg { fill: #fffdf8; stroke: var(--rule); }
+html[data-theme="light"] .diagram .node-label { fill: #45423b; }
+html[data-theme="light"] .diagram .link { stroke: #cbbfa8; }
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.77;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body { min-height: 100vh; min-height: 100dvh; }
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px var(--pad-x);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color .15s;
+  font-family: var(--sans);
+}
+.back-link:hover { color: var(--accent); }
+.back-link svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.case-hero {
+  padding: var(--sp-l) var(--pad-x) var(--sp-m);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.case-kicker {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: var(--sp-m);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-wrap: wrap;
+}
+.case-kicker .kicker-dot {
+  width: 5px; height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.case-kicker .kicker-company {
+  color: var(--text);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+.case-title {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: clamp(35px, 3.72vw + 0.93rem, 61px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: var(--sp-m);
+  max-width: 15em;
+}
+.case-lede {
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  font-weight: 400;
+  color: var(--faint);
+  line-height: 1.66;
+  max-width: 30em;
+  text-wrap: pretty;
+  border-left: 2px solid var(--accent);
+  padding-left: var(--sp-s);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: var(--sp-m);
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--accent);
+  color: #0c0c0b;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 13px 22px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: opacity .15s, transform .1s;
+}
+.btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  border: 1px solid var(--rule);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 13px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: border-color .15s, color .15s;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+.fact-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-s);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--sp-m) var(--pad-x);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.fact { padding-right: var(--sp-s); border-right: 1px solid var(--rule); }
+.fact:last-child { border-right: none; padding-right: 0; }
+.fact-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.fact-value {
+  display: block;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.case-body {
+  max-width: var(--body-max);
+  margin: 0 auto;
+  padding: var(--sp-xl) var(--pad-x);
+}
+.case-sec {
+  padding: var(--sp-l) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.case-sec:last-child { border-bottom: none; }
+.case-sec > h2 {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--sp-m);
+}
+.case-sec > h2 .sec-num {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--accent);
+  margin-right: 10px;
+  letter-spacing: 0.12em;
+}
+
+.prose {
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  color: var(--faint);
+  line-height: 1.88;
+  text-wrap: pretty;
+  max-width: 42em;
+}
+.prose + .prose { margin-top: var(--sp-s); }
+.prose strong { color: var(--text); font-weight: 500; }
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-m);
+  padding-left: var(--sp-m);
+  border-left: 2px solid var(--rule);
+}
+.step { position: relative; }
+.step::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--sp-m) * -1 - 5px);
+  top: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.step-title {
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.3;
+}
+.step-stamp {
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+.step-body {
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  color: #8a8780;
+  line-height: 1.88;
+  text-wrap: pretty;
+  max-width: 42em;
+}
+
+.stack-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.stack-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.stack-cat {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 5px;
+  line-height: 1.3;
+}
+.stack-pills { display: flex; flex-wrap: wrap; gap: 9px; }
+.stack-pill {
+  font-size: 14px;
+  color: var(--pill-text);
+  background: var(--pill-bg);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 7px 13px;
+  line-height: 1.4;
+}
+
+.case-demo {
+  margin: var(--sp-m) auto;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.case-demo img,
+.case-demo video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: #000;
+}
+.case-demo figcaption {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--sans);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.diagram {
+  margin-top: var(--sp-s);
+  padding: var(--sp-m) var(--sp-s);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: #111110;
+}
+html[data-theme="light"] .diagram { background: var(--illus-bg); border-color: var(--rule); }
+.diagram svg { display: block; width: 100%; height: auto; max-height: 220px; }
+.diagram .node-bg { fill: #181715; stroke: #2e2e2a; stroke-width: 1; }
+.diagram .node-label { fill: #b0ada6; font-family: var(--sans); font-size: 11px; font-weight: 500; }
+.diagram .link { stroke: #3a3935; stroke-width: 1.2; fill: none; }
+.diagram .axis { stroke: var(--axis); stroke-width: 1; fill: none; }
+.diagram .dot { fill: var(--accent); }
+.diagram .pulse { fill: var(--accent); }
+
+.takeaway {
+  margin-top: var(--sp-m);
+  padding: var(--sp-m);
+  border-left: 2px solid var(--accent);
+  background: color-mix(in oklch, var(--accent) 3%, transparent);
+  max-width: 44em;
+  border-radius: 0 3px 3px 0;
+}
+.takeaway-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.takeaway-body {
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  font-weight: 400;
+  line-height: 1.72;
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+.case-footer {
+  padding: var(--sp-xl) var(--pad-x);
+  text-align: center;
+  border-top: 1px solid var(--rule);
+}
+.case-footer .prompt {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: var(--step-0);
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: var(--sp-m);
+  line-height: 1.35;
+}
+.case-footer .cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #0c0c0b;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 16px 30px;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: opacity .15s, transform .1s;
+}
+.case-footer .cta:hover { opacity: .86; transform: translateY(-1px); }
+.case-footer .secondary {
+  display: inline-block;
+  margin-top: var(--sp-s);
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.case-footer .secondary:hover { color: var(--accent); }
+
+@media (max-width: 640px) {
+  :root { --step-3: clamp(38px, 9vw, 58px); --step-2: clamp(28px, 7vw, 42px); --step-1: clamp(18px, 5vw, 26px); }
+  .fact-bar { grid-template-columns: repeat(2, 1fr); gap: var(--sp-s); }
+  .fact:nth-child(2) { border-right: none; }
+  .stack-row { grid-template-columns: 1fr; gap: 8px; }
+}
+
+/* ─── THEME TOGGLE — sun/moon slider (matches index) ── */
+.theme-toggle {
+  position: fixed;
+  top: max(18px, env(safe-area-inset-top, 18px));
+  right: max(20px, env(safe-area-inset-right, 20px));
+  z-index: 51;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--muted);
+}
+.theme-toggle svg { width: 15px; height: 15px; transition: color .2s, opacity .2s; }
+.theme-toggle .t-sun  { color: var(--text); }
+.theme-toggle .t-moon { color: var(--muted); }
+html[data-theme="light"] .theme-toggle .t-sun  { color: var(--muted); }
+html[data-theme="light"] .theme-toggle .t-moon { color: var(--text); }
+.theme-toggle .t-track {
+  position: relative;
+  width: 40px; height: 22px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--text) 14%, transparent);
+  border: 1px solid var(--rule);
+  transition: background .2s;
+}
+.theme-toggle .t-knob {
+  position: absolute;
+  top: 50%; left: 3px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--text);
+  transform: translate(16px, -50%);
+  transition: transform .22s cubic-bezier(.4,.1,.2,1);
+}
+html[data-theme="light"] .theme-toggle .t-knob { transform: translate(0, -50%); }
+.theme-toggle:hover .t-track { border-color: var(--accent); }
+
+/* ─── RELATED CASE CARD ── */
+.related-case {
+  margin: var(--sp-l) auto 0;
+  max-width: var(--body-max);
+  padding: 0 var(--pad-x);
+}
+.related-case-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-s);
+  padding: var(--sp-m);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s, transform .1s;
+}
+.related-case-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.related-case-kicker {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.related-case-title {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: var(--step-0);
+  line-height: 1.2;
+  color: var(--text);
+  letter-spacing: -0.015em;
+}
+.related-case-arrow {
+  font-size: var(--step-1);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-label="Toggle color mode" title="Toggle color mode">
+  <svg class="t-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+  <span class="t-track" aria-hidden="true"><span class="t-knob"></span></span>
+  <svg class="t-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+</button>
+
+<a class="back-link" href="./index.html">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+  Back to portfolio
+</a>
+
+<section class="case-hero">
+  <div class="case-kicker">
+    <span>Case Study</span>
+    <span class="kicker-dot" aria-hidden="true"></span>
+    <span class="kicker-company">Open source</span>
+  </div>
+  <h1 class="case-title">Browd — an AI agent that operates your browser for you.</h1>
+  <p class="case-lede">
+    An open-source AI agent that runs multi-step browser tasks — research, extraction, navigation, form-filling — in your own browser session, on your own keys. No hosted cloud, no subscription.
+  </p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="https://chromewebstore.google.com/detail/browd-ai-browser-agent/kgjeibjpgopjomghegdpelbnjgmddobb" target="_blank" rel="noopener">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+      Install from the Chrome Web Store
+    </a>
+    <a class="btn-ghost" href="https://github.com/wyddy7/browd" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path></svg>
+      View source
+    </a>
+  </div>
+</section>
+
+<div class="fact-bar">
+  <div class="fact"><span class="fact-label">Role</span><span class="fact-value">Solo · built end-to-end</span></div>
+  <div class="fact"><span class="fact-label">Scope</span><span class="fact-value">Agent runtime · UI/UX · distribution</span></div>
+  <div class="fact"><span class="fact-label">Surface</span><span class="fact-value">Chrome extension (MV3)</span></div>
+  <div class="fact"><span class="fact-label">Status</span><span class="fact-value"><a href="https://chromewebstore.google.com/detail/browd-ai-browser-agent/kgjeibjpgopjomghegdpelbnjgmddobb" target="_blank" style="color:inherit;border-bottom:1px dashed var(--muted);text-decoration:none">Live · Chrome Web Store</a></span></div>
+</div>
+
+<div class="case-body">
+
+  <section class="case-sec">
+    <h2><span class="sec-num">01</span>Context</h2>
+
+    <figure class="case-demo" aria-label="Browd running a task in the browser">
+      <video autoplay loop muted playsinline preload="metadata" poster="">
+        <source src="./assets/browd-demo.mp4" type="video/mp4">
+      </video>
+      <figcaption>A real 32-second run — asked for the top-3 open-source models on a live leaderboard, start to finish.</figcaption>
+    </figure>
+
+    <p class="prose">
+      You give it a task in plain language — say, <em>"find the top-3 open-source models on this leaderboard"</em> or <em>"pull this arXiv abstract and summarize it"</em> — and it works through real pages to get there: clicking, typing, scrolling, reading. It lives in a Chrome side panel and acts in your live session, so nothing is handed off to a vendor's cloud.
+    </p>
+    <p class="prose">
+      The engineering challenge is reliability — keeping the model from going off the rails in a live browser. It has to recognize when it's stuck instead of looping forever, stay clear of your other tabs, and refuse instructions a web page tries to feed it. That reliability-and-trust layer is <strong>most of what's below</strong>.
+    </p>
+  </section>
+
+  <section class="case-sec">
+    <h2><span class="sec-num">02</span>Architecture</h2>
+    <p class="prose">
+      The agent runs as a <strong>LangGraph.js</strong> state machine in a plan-and-execute shape: a planner breaks the task into concrete steps, an agent node executes each one with browser tools — click, type, scroll, navigate, read, extract, plus web search and fetch — and a <strong>replanner</strong> adapts the plan when a step fails instead of grinding on a dead path. The whole loop lives inside the extension's <strong>MV3 service worker</strong>, on your machine.
+    </p>
+    <p class="prose">
+      Two design choices keep it safe. The agent works in <strong>its own tab</strong>; your other tabs are passed to the model as metadata only, never a surface it can act on without asking. And every piece of third-party text — page content, search snippets, fetched articles — is <strong>wrapped before it reaches the model</strong>, so a page can't smuggle in instructions of its own.
+    </p>
+
+    <div class="diagram" aria-hidden="true">
+      <svg viewBox="-18 0 498 160" preserveAspectRatio="xMidYMid meet">
+        <!-- task -->
+        <circle cx="14" cy="80" r="6" class="dot"></circle>
+        <text x="14" y="106" text-anchor="middle" class="node-label">task</text>
+        <!-- planner -->
+        <rect x="42" y="68" width="76" height="24" rx="3" class="node-bg"></rect>
+        <text x="80" y="83" text-anchor="middle" class="node-label">planner</text>
+        <path class="link" d="M20 80 L42 80"></path>
+        <!-- agent -->
+        <rect x="150" y="68" width="92" height="24" rx="3" class="node-bg"></rect>
+        <text x="196" y="83" text-anchor="middle" class="node-label">agent</text>
+        <text x="196" y="108" text-anchor="middle" class="node-label">click · type · scroll · read · fetch</text>
+        <path class="link" d="M118 80 L150 80"></path>
+        <!-- replanner -->
+        <rect x="274" y="68" width="84" height="24" rx="3" class="node-bg"></rect>
+        <text x="316" y="83" text-anchor="middle" class="node-label">replanner</text>
+        <path class="link" d="M242 80 L274 80"></path>
+        <!-- adapt loop replanner -> agent -->
+        <path class="link" d="M316 68 C 300 38, 212 38, 196 68"></path>
+        <text x="256" y="32" text-anchor="middle" class="node-label">adapts on failure</text>
+        <!-- result -->
+        <path class="link" d="M358 80 L434 80"></path>
+        <circle cx="442" cy="80" r="7" class="pulse"></circle>
+        <text x="442" y="106" text-anchor="middle" class="node-label">result</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="case-sec">
+    <h2><span class="sec-num">03</span>What I built</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-head"><span class="step-title">A chat-first surface</span><span class="step-stamp">— UI/UX</span></div>
+        <p class="step-body">Redesigned the whole panel: a chat composer with a quick model picker, a live status strip that shows what the agent is doing as it happens, a permission-mode selector, and a token-usage ring. Minimal affordances — left-rule accents, no card chrome — and localized into 7 languages.</p>
+      </div>
+      <div class="step">
+        <div class="step-head"><span class="step-title">A plan-and-execute agent runtime</span><span class="step-stamp">— runtime</span></div>
+        <p class="step-body">Rebuilt the loop into a planner / agent / replanner state machine on LangGraph.js, with vision, running inside the MV3 service worker. It's the engine behind the run in the clip above.</p>
+      </div>
+      <div class="step">
+        <div class="step-head"><span class="step-title">An agent that stays in its lane</span><span class="step-stamp">— trust</span></div>
+        <p class="step-body">Tab isolation (the agent gets its own tab; yours are metadata), an explicit permission prompt before it ever takes over a tab you're on, and untrusted-content wrapping on every external text source — the OWASP LLM07 prompt-injection class, handled by default.</p>
+      </div>
+      <div class="step">
+        <div class="step-head"><span class="step-title">Shipped, not just built</span><span class="step-stamp">— distribution</span></div>
+        <p class="step-body">README, changelog, an eval suite that gates releases, an Apache-2.0 license, and a live Chrome Web Store listing anyone installs in one click. The full path from code to a thing a stranger can run.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="case-sec">
+    <h2><span class="sec-num">04</span>Under the hood</h2>
+    <p class="prose">
+      Most of the work was making the agent behave in a hostile, live environment. A sample of the failures I hit in real runs and what each one took to fix:
+    </p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-head"><span class="step-title">It bashed the same wall for 15 minutes</span><span class="step-stamp">— fresh-state verify</span></div>
+        <p class="step-body">The loop checked a cached snapshot, so every successful click looked like a no-op and the agent retried forever. Now every post-action check reads live DOM state, with a hard stop after repeated no-progress and a scroll fallback for single-page apps. It notices and changes tack.</p>
+      </div>
+      <div class="step">
+        <div class="step-head"><span class="step-title">The model ignored "stop after N steps"</span><span class="step-stamp">— state budgets</span></div>
+        <p class="step-body">Prompt-level caps are advisory; a model under pressure blows past them. I moved budgets into the graph itself — real counters that return a forcing error when exhausted — so a runaway task stops deterministically, not on good behaviour.</p>
+      </div>
+      <div class="step">
+        <div class="step-head"><span class="step-title">A web page could tell the agent what to do</span><span class="step-stamp">— injection guard</span></div>
+        <p class="step-body">Any page, search result, or fetched article can carry "ignore your instructions and…". Every third-party text now passes through a wrapper that fences it as data, not commands, before it reaches the model.</p>
+      </div>
+      <div class="step">
+        <div class="step-head"><span class="step-title">It grabbed a tab I was using</span><span class="step-stamp">— consent</span></div>
+        <p class="step-body">The agent could take over an open tab silently. Now it confines itself to its own tab group and asks for explicit permission before touching anything of yours.</p>
+      </div>
+      <div class="step">
+        <div class="step-head"><span class="step-title">The fix was deleting my own code</span><span class="step-stamp">— corrected against the field</span></div>
+        <p class="step-body">My "stuck detector" was killing agents that were actually finishing — a no-tool-call turn is how this class of agent signals it's done. I checked the behaviour against five production systems (browser-use, Anthropic computer-use, OpenAI Operator, Magentic-One, Stagehand), confirmed mine was wrong, and removed it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="case-sec">
+    <h2><span class="sec-num">05</span>Outcome</h2>
+    <p class="prose">
+      Live on the <a href="https://chromewebstore.google.com/detail/browd-ai-browser-agent/kgjeibjpgopjomghegdpelbnjgmddobb" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px">Chrome Web Store</a> — one-click install, no account needed. <strong>27.6k lines</strong> of TypeScript, <strong>224</strong> tests, and an eval suite that gates every release. Thirteen runtime decisions that didn't generalize are written up as lessons, so the next ones come cheaper.
+    </p>
+
+    <div class="takeaway">
+      <div class="takeaway-title">Takeaway</div>
+      <p class="takeaway-body">
+        The interesting work in browser agents isn't the model — it's everything that keeps the model honest in a live, hostile environment. Stuck loops, runaway budgets, injected instructions, a tab grabbed without consent: solving those is what turns a demo into an agent you'd actually run in your own browser.
+      </p>
+    </div>
+  </section>
+
+  <section class="case-sec">
+    <h2><span class="sec-num">06</span>Stack</h2>
+    <div class="stack-grid">
+      <div class="stack-row">
+        <span class="stack-cat">Agent</span>
+        <div class="stack-pills">
+          <span class="stack-pill">LangGraph.js</span>
+          <span class="stack-pill">StateGraph</span>
+          <span class="stack-pill">plan-and-execute</span>
+          <span class="stack-pill">vision</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-cat">Browser</span>
+        <div class="stack-pills">
+          <span class="stack-pill">Chrome DevTools Protocol</span>
+          <span class="stack-pill">puppeteer-core</span>
+          <span class="stack-pill">MV3 service worker</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-cat">UI</span>
+        <div class="stack-pills">
+          <span class="stack-pill">React</span>
+          <span class="stack-pill">Vite</span>
+          <span class="stack-pill">Tailwind</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-cat">Language · build</span>
+        <div class="stack-pills">
+          <span class="stack-pill">TypeScript</span>
+          <span class="stack-pill">Turbo</span>
+          <span class="stack-pill">pnpm</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-cat">Models</span>
+        <div class="stack-pills">
+          <span class="stack-pill">OpenRouter</span>
+          <span class="stack-pill">bring-your-own-key</span>
+          <span class="stack-pill">multi-provider</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin-top:var(--sp-l);max-width:44em;">
+      Open source under Apache-2.0, built on the Nanobrowser project — substantially rewritten since (≈17k lines changed). <a href="https://github.com/wyddy7/browd" target="_blank" style="color:var(--muted);text-decoration:none;border-bottom:1px dashed var(--muted)">Source on GitHub</a>.
+    </p>
+  </section>
+
+</div>
+
+<!-- RELATED CASE -->
+<div class="related-case">
+  <a class="related-case-card" href="./case-netwho.html">
+    <div>
+      <span class="related-case-kicker">Another case study</span>
+      <span class="related-case-title">NetWho — AI CRM for a personal network</span>
+    </div>
+    <span class="related-case-arrow">→</span>
+  </a>
+</div>
+
+<footer class="case-footer">
+  <div class="prompt">Want an agent system built for your domain?</div>
+  <a class="cta" href="https://t.me/wyddy7" target="_blank" rel="noopener">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    Get in touch
+  </a>
+  <div><a class="secondary" href="https://github.com/wyddy7/browd" target="_blank">or read the source on GitHub →</a></div>
+</footer>
+
+<script>
+(function () {
+  const THEME_KEY = 'dm-landing-mode';
+  let mode = localStorage.getItem(THEME_KEY) || 'dark';
+  function apply(m) {
+    if (m === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    else document.documentElement.removeAttribute('data-theme');
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', m === 'light' ? '#f5f3ec' : '#0c0c0b');
+  }
+  apply(mode);
+  const toggle = document.getElementById('themeToggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      mode = mode === 'light' ? 'dark' : 'light';
+      apply(mode);
+      localStorage.setItem(THEME_KEY, mode);
+    });
+  }
+})();
+</script>
+
+</body></html>

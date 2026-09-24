@@ -1,0 +1,55 @@
+# Daniil Makeev — AI Engineer
+
+> Production AI engineer building agent systems, RAG pipelines, and content generation stacks.
+
+**Canonical URL**: https://wyddy.tech/
+
+## Summary
+
+- Focuses on multi-agent architectures, retrieval quality, pipeline speed, and generation cost.
+- Stack: Python, LangGraph, deepagents, Supabase, Docker, OpenRouter.
+
+## Selected Work
+
+### Hao — Video Generation Pipeline
+
+- Rebuilt a full video generation pipeline: topic to published mp4.
+- Dialogue, TTS, images, FFmpeg compose, S3 upload — two-stage JSON API.
+- Results: **6× faster** throughput, **−60%** generation cost.
+- Stack: deepagents, LangGraph, ElevenLabs, FFmpeg, OpenRouter, Docker.
+
+### NetWho — AI CRM Assistant
+
+- Telegram-native AI assistant over a personal professional network.
+- RAG with pgvector, Jina AI news enrichment, reranking loop.
+- Live demo with multi-tenant contact RAG, Supabase RLS, pgvector, and reranking.
+- Public demo: https://t.me/netwho_bot
+- Stack: deepagents, LangGraph, pgvector, Supabase, aiogram, Docker.
+
+### Digest Bot — Personalized AI Digest
+
+- Self-hosted Telegram bot running daily.
+- Two-agent architecture: stateless pipeline + stateful conversational agent with LangGraph checkpointing over Supabase.
+- Stack: deepagents, LangGraph + Supabase checkpointer, OpenRouter, python-telegram-bot.
+
+## Contact
+
+- LinkedIn: https://www.linkedin.com/in/daniil-makeev/
+- GitHub: https://github.com/wyddy7
+- Email: wyddy.work@gmail.com
+- Telegram: https://t.me/wyddy7
+
+## Markdown versions
+
+Every page has a markdown twin at its URL + `.md`, served as `Content-Type: text/markdown`.
+Each HTML page also advertises its twin via `<link rel="alternate" type="text/markdown">`.
+
+- Home: https://wyddy.tech/index.html.md
+- Case · Browd (browser agent): https://wyddy.tech/case-browd.html.md
+- Case · NetWho (contact RAG): https://wyddy.tech/case-netwho.html.md
+- Case · Digest Bot (news digest): https://wyddy.tech/case-digest.html.md
+- Case · Video pipeline (Hao): https://wyddy.tech/case-video-pipeline.html.md
+
+## Agent Resources
+
+- Agent skills index: https://wyddy.tech/.well-known/agent-skills/index.json

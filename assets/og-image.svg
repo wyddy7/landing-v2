@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <clipPath id="catClip"><rect width="1024" height="1024"/></clipPath>
+  </defs>
+
+  <!-- paper bg -->
+  <rect width="1200" height="630" fill="#f5f3ec"/>
+
+  <!-- top paper mark -->
+  <circle cx="72" cy="72" r="3" fill="oklch(58% 0.17 75)"/>
+
+  <!-- cat logo top-right -->
+  <g transform="translate(1050,56) scale(0.095)">
+    <path d="M285.494 22.7611C-28.0848 308.139 -74.819 1122.92 597.791 1014.64C1179.4 921.01 931.114 -21.6078 734.703 110.991C694.316 138.256 759.4 200.303 781.372 241.392C801.09 278.265 836.829 397.324 809.642 572.652C780.415 761.135 636.523 910.65 599.729 901.347C475.32 852.666 503.703 613.867 502.571 563.216C497.981 357.725 605.093 101.343 575.523 95.5879C527.039 86.1512 314.197 355.067 298.191 73.3788C297.14 54.8845 302.885 6.93411 285.494 22.7611Z" fill="#1a1917"/>
+  </g>
+
+  <!-- kicker · eyebrow -->
+  <text x="72" y="132" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif" font-size="18" fill="#a8a498" letter-spacing="4" font-weight="600">PORTFOLIO · 2026</text>
+
+  <!-- amber accent rule -->
+  <line x1="72" y1="176" x2="168" y2="176" stroke="oklch(58% 0.17 75)" stroke-width="3"/>
+
+  <!-- name · serif italic -->
+  <text x="72" y="296" font-family="Cormorant Garamond, Georgia, 'Times New Roman', serif" font-style="italic" font-weight="400" font-size="120" fill="#1a1917" letter-spacing="-3">Daniil Makeev</text>
+
+  <!-- role line -->
+  <text x="72" y="352" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif" font-size="26" fill="#3a3834" letter-spacing="0.4" font-weight="500">AI Engineer · production RAG &amp; GenAI pipelines</text>
+
+  <!-- project strip -->
+  <text x="72" y="432" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#78746b" letter-spacing="1">NetWho — multi-tenant contact RAG</text>
+  <text x="72" y="462" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#78746b" letter-spacing="1">Video generation pipeline — 6× faster · −60% cost</text>
+  <text x="72" y="492" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#78746b" letter-spacing="1">Digest Bot — self-hosted, running daily</text>
+
+  <!-- footer -->
+  <line x1="72" y1="548" x2="1128" y2="548" stroke="#e0ddd4" stroke-width="1"/>
+  <text x="72" y="586" font-family="-apple-system, sans-serif" font-size="18" fill="#1a1917" letter-spacing="3" font-weight="700">WYDDY.TECH</text>
+  <text x="1128" y="586" text-anchor="end" font-family="-apple-system, sans-serif" font-size="16" fill="#78746b" letter-spacing="1">agent systems · RAG · generation</text>
+</svg>
