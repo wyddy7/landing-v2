@@ -13,7 +13,7 @@ Use this skill when you need to connect featured outcomes to the underlying engi
 - Technologies: LLM dialogue, ElevenLabs TTS, FFmpeg, Backblaze S3, Docker
 - Main themes: orchestration, cost control, pipeline reliability
 
-## NetWho - AI CRM assistant
+## NetWho - AI CRM assistant (applied R&D)
 
 - Outcomes: live Telegram assistant over personal and organizational networks
 - Technologies: RAG, pgvector, aiogram, Pydantic v2, Supabase, Docker

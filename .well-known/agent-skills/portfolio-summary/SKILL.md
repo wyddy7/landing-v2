@@ -9,7 +9,7 @@ Use this skill when you need a short, high-signal summary of Daniil Makeev as a 
 
 ## Positioning
 
-Daniil Makeev is an applied AI engineer focused on production RAG systems, internal GenAI pipelines, and workflow automation.
+Daniil Makeev is a Senior AI / LLM engineer (five years in software engineering) focused on production RAG systems, agent systems, internal GenAI pipelines, and workflow automation — across production delivery and applied R&D.
 
 ## Core value
 
@@ -21,9 +21,9 @@ Daniil Makeev is an applied AI engineer focused on production RAG systems, inter
 ## Strongest proof points
 
 - 6x faster video generation after a pipeline rewrite
-- 60% lower generation cost after LLM request deduplication
+- 60% lower generation cost ($2.00 → $0.80 per video)
 - Live multi-tenant Contact RAG shipped on Telegram
-- Self-hosted daily digest bot with LangGraph checkpointing
+- Live daily digest bot with LangGraph checkpointing
 
 ## Best-fit work
 

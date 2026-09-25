@@ -7,21 +7,21 @@
       "type": "discovery",
       "description": "Concise summary of Daniil Makeev's positioning, proof points, and strongest production AI case studies.",
       "url": "https://wyddy.tech/.well-known/agent-skills/portfolio-summary/SKILL.md",
-      "sha256": "3881a659e99611ad9826b051e0972b71fd21c38ae002f9896f9c7cef21932554"
+      "sha256": "c14c696c8bff2e0fa5f42235a04c2d77b8763fa3834c7bad801cde7471b1ffb9"
     },
     {
       "name": "contact-options",
       "type": "routing",
       "description": "Preferred ways to contact Daniil Makeev for hiring, project discussion, and portfolio follow-up.",
       "url": "https://wyddy.tech/.well-known/agent-skills/contact-options/SKILL.md",
-      "sha256": "2fd7037b4b345deea26080b63b03d502d694e4650e35bf8ed98cf57c8eb956f6"
+      "sha256": "51c817bc73c52e3ea22f10c63ad73157e6f46074f013defb5864b18831cb2024"
     },
     {
       "name": "project-map",
       "type": "reference",
       "description": "Maps each featured project to its outcomes, constraints, and the main technologies used.",
       "url": "https://wyddy.tech/.well-known/agent-skills/project-map/SKILL.md",
-      "sha256": "d63cb40dcb964d33ffdcaac96c1583fd1c12759bf3ff5954a94b9e8300ebc6c2"
+      "sha256": "c7631640feb353194f9f098b5c15fca674d86934b8c2d7575cbd01e3c860d58f"
     }
   ]
 }
