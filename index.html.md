@@ -66,7 +66,7 @@ answers follow-ups.
 - **Data:** PostgreSQL · Supabase · pgvector · Pydantic v2 · AsyncIO · httpx
 - **Platforms:** OpenRouter · OpenAI · ElevenLabs · Jina AI · Backblaze S3
 - **DevOps:** Docker · docker-compose · GitHub Actions · uv · Linux
-- **Languages:** Python · SQL · TypeScript · English B2 · Russian native · Chinese B1
+- **Languages:** Python · SQL · TypeScript · English B2 · Russian native
 
 ## Contact
 
