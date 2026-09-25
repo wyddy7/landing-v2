@@ -1,23 +1,24 @@
-# Daniil Makeev — AI Engineer
+# Daniil Makeev — Senior AI / LLM Engineer
 
-> AI Engineer. Builds production AI agents, RAG pipelines and content-generation systems — end to end.
+> Senior AI / LLM Engineer. Builds production AI agents, RAG pipelines and content-generation systems — end to end.
 
 - **Canonical:** https://wyddy.tech/
-- **Role:** AI Engineer
+- **Role:** Senior AI Engineer · LLM Engineer
 - **Tagline:** I build and ship AI agents and RAG systems end to end.
 - **Availability:** Open to full-time or contract · remote / relocation
 
 ## About
 
-I'm an AI engineer based in Yerevan, Armenia, open to remote or relocation across EU/US
-timezones.
+I'm an AI / LLM engineer based in Yerevan, Armenia, with five years in software
+engineering — open to remote or relocation across EU/US timezones.
 
-I've been at [Hao](https://hao.vc), shipping production RAG and
-content-generation pipelines, where I led a
-[video pipeline](https://wyddy.tech/case-video-pipeline.html) to **6× faster
-output at 60% lower cost**. On the side I build and ship
-my own tools — an open-source [browser agent](https://wyddy.tech/case-browd.html),
-a multi-tenant contact RAG, a personalized news digest.
+I've been at [Hao](https://hao.vc), working across production delivery and applied
+R&D, where I led a [video pipeline](https://wyddy.tech/case-video-pipeline.html)
+to **6× faster output at 60% lower cost**. Below are selected systems I've built
+and maintained across production delivery, applied R&D and open-source
+engineering — an open-source [browser agent](https://wyddy.tech/case-browd.html),
+a multi-tenant contact RAG, a personalized news digest. Before Hao: backend and
+applied-AI engineering at EPAM and Zenit-Electro.
 
 ## Projects
 
@@ -53,7 +54,7 @@ one summary tuned to your focus. A deterministic pipeline produces the daily
 digest; a separate stateful chat agent (LangGraph, checkpointed to Supabase)
 answers follow-ups.
 
-- **Status:** Self-hosted · running daily
+- **Status:** Live · running daily
 - **Stack:** LangGraph · Supabase checkpointer · OpenRouter · python-telegram-bot · Docker
 - Source: https://github.com/wyddy7/claude-digest
 - Case study: https://wyddy.tech/case-digest.html
@@ -69,8 +70,8 @@ answers follow-ups.
 
 ## Contact
 
-The projects here I built, shipped, and keep running myself. If that's the kind
-of engineer your team is missing:
+Every system here is live and still running. If that's the kind of engineer
+your team is missing:
 
 - Telegram (primary): https://t.me/wyddy7
 - Email: wyddy.work@gmail.com

@@ -3,7 +3,7 @@
 > Case Study · Open source
 
 - **Canonical:** https://wyddy.tech/case-browd.html
-- **Role:** Solo · built end-to-end
+- **Role:** Agent architecture · runtime
 - **Scope:** Agent runtime · UI/UX · distribution
 - **Surface:** Chrome extension (MV3)
 - **Status:** Live · Chrome Web Store

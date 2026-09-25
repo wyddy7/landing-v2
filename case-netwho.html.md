@@ -1,9 +1,9 @@
 # NetWho — AI CRM for a personal network
 
-> Case Study · Side project
+> Case Study · Applied R&D
 
 - **Canonical:** https://wyddy.tech/case-netwho.html
-- **Role:** Solo · built end-to-end
+- **Role:** Built end-to-end
 - **Scope:** Bot · RAG · multi-tenant layer
 - **Surface:** Telegram bot
 - **Status:** Live demo — https://t.me/netwho_bot
@@ -57,9 +57,8 @@ Flow: `query → aiogram 3.x → embed query → {pgvector contacts, Jina AI new
 
 ## 04 · Outcome
 
-Shipped solo, live on Telegram as [@netwho_bot](https://t.me/netwho_bot). Used
-daily for my own network management; every change merges to master and rolls out
-from there.
+Live on Telegram as [@netwho_bot](https://t.me/netwho_bot). In daily use; every
+change merges to master and rolls out from there.
 
 **Takeaway:** Personal RAG is the cleanest way to learn production RAG: the dataset
 is small enough to understand end-to-end, but every reasoning failure is something

@@ -10,7 +10,7 @@ Use this skill when you need the best contact path for hiring or project discuss
 ## Preferred channels
 
 1. LinkedIn: https://www.linkedin.com/in/daniil-makeev/
-2. Email: mailto:wyddy7@gmail.com
+2. Email: mailto:wyddy.work@gmail.com
 3. Telegram: https://t.me/wyddy7
 
 ## When to use which

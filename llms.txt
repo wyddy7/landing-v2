@@ -1,6 +1,6 @@
-# Daniil Makeev — AI Engineer
+# Daniil Makeev — Senior AI / LLM Engineer
 
-> Production AI engineer building agent systems, RAG pipelines, and content generation stacks.
+> Senior AI / LLM engineer (five years in software engineering) building agent systems, RAG pipelines, and content generation stacks across production delivery and applied R&D.
 
 **Canonical URL**: https://wyddy.tech/
 
@@ -8,6 +8,7 @@
 
 - Focuses on multi-agent architectures, retrieval quality, pipeline speed, and generation cost.
 - Stack: Python, LangGraph, deepagents, Supabase, Docker, OpenRouter.
+- Career: EPAM → Zenit-Electro → Hao (AI lab).
 
 ## Selected Work
 
@@ -16,19 +17,19 @@
 - Rebuilt a full video generation pipeline: topic to published mp4.
 - Dialogue, TTS, images, FFmpeg compose, S3 upload — two-stage JSON API.
 - Results: **6× faster** throughput, **−60%** generation cost.
-- Stack: deepagents, LangGraph, ElevenLabs, FFmpeg, OpenRouter, Docker.
+- Stack: Python, structured LLM outputs, ElevenLabs, pluggable image providers, FFmpeg, S3 (boto3).
 
-### NetWho — AI CRM Assistant
+### NetWho — AI CRM Assistant (applied R&D)
 
 - Telegram-native AI assistant over a personal professional network.
 - RAG with pgvector, Jina AI news enrichment, reranking loop.
 - Live demo with multi-tenant contact RAG, Supabase RLS, pgvector, and reranking.
 - Public demo: https://t.me/netwho_bot
-- Stack: deepagents, LangGraph, pgvector, Supabase, aiogram, Docker.
+- Stack: pgvector, Supabase, aiogram, OpenRouter, Groq Whisper, Docker.
 
-### Digest Bot — Personalized AI Digest
+### Digest Bot — Personalized AI Digest (applied R&D)
 
-- Self-hosted Telegram bot running daily.
+- Live Telegram bot running daily.
 - Two-agent architecture: stateless pipeline + stateful conversational agent with LangGraph checkpointing over Supabase.
 - Stack: deepagents, LangGraph + Supabase checkpointer, OpenRouter, python-telegram-bot.
 

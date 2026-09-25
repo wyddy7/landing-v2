@@ -1,9 +1,9 @@
 # Digest Bot — your channels, distilled to 60 seconds a day
 
-> Case Study · Live · self-hosted
+> Case Study · Applied R&D · live
 
 - **Canonical:** https://wyddy.tech/case-digest.html
-- **Role:** Solo · built end-to-end
+- **Role:** Built end-to-end
 - **Scope:** Reader · selection · output · chat · cost
 - **Surface:** Telegram bot
 - **Status:** Live · running daily
@@ -80,8 +80,8 @@ call ever runs:
 
 ## 05 · Outcome
 
-Live and self-hosted, delivering a digest every day. Built solo end-to-end, and
-it's the thing I actually open in the morning instead of the channels.
+Live, delivering a digest every day — and it's the thing I actually open in the
+morning instead of the channels.
 
 **Takeaway:** A digest lives or dies on the unglamorous parts around the summary: a
 reader that opens the link instead of quoting the headline, a picker that won't let
@@ -96,7 +96,7 @@ again tomorrow — for something daily, the only test that counts.
 - **Reader:** trafilatura · fetch + 1-hop resolve
 - **Models:** OpenRouter · multi-model registry · token caps
 - **Chat agent:** deepagents · LangGraph · Supabase checkpointer
-- **Data · deploy:** Supabase · Docker · self-hosted
+- **Data · deploy:** Supabase · Docker · VPS
 
 Open source under AGPL-3.0. Source: https://github.com/wyddy7/claude-digest
 
