@@ -7,20 +7,30 @@ description: Project-to-stack map for Daniil Makeev's featured AI work.
 
 Use this skill when you need to connect featured outcomes to the underlying engineering work.
 
-## Hao - Video generation pipeline
+## hao.vc - Video generation pipeline
 
-- Outcomes: 6x faster processing, 60% lower generation cost, batch mode
-- Technologies: LLM dialogue, ElevenLabs TTS, FFmpeg, Backblaze S3, Docker
-- Main themes: orchestration, cost control, pipeline reliability
+- Outcomes: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 800K+ organic views
+- Technologies: Python, Prefect, OpenAI API, ElevenLabs, Google Imagen, FFmpeg, S3 (boto3), Pydantic v2
+- Main themes: orchestration, provider cost control, resilience around non-deterministic providers
+- Case study: https://wyddy.tech/case-video-pipeline.html
 
-## NetWho - AI CRM assistant (applied R&D)
+## Browd - Browser AI agent (open-source R&D)
+
+- Outcomes: live on the Chrome Web Store; 218 tests, 6 failure classes, 52–89% measured prompt-cache hit rate
+- Technologies: TypeScript, LangGraph.js plan-and-execute, Chrome MV3, React
+- Main themes: human approval before risky actions, isolated tab, typed failure handling
+- Case study: https://wyddy.tech/case-browd.html
+
+## NetWho - Contact RAG in Telegram (open-source R&D)
 
 - Outcomes: live Telegram assistant over personal and organizational networks
-- Technologies: RAG, pgvector, aiogram, Pydantic v2, Supabase, Docker
-- Main themes: retrieval, context assembly, tenant isolation
+- Technologies: pgvector embeddings plus keyword match, Supabase RLS, aiogram, Pydantic v2, Docker
+- Main themes: answers grounded in source records, isolation per tenant
+- Case study: https://wyddy.tech/case-netwho.html
 
-## NetWho - Retrieval layer
+## Digest - Personalized AI digest
 
-- Outcomes: grounded answers from source records with cross-tenant isolation
-- Technologies: embeddings, reranking, Supabase RLS, multi-tenant schema
-- Main themes: answer quality, source grounding, safe multi-user use
+- Outcomes: live, running daily
+- Technologies: deterministic pipeline plus a stateful chat agent (DeepAgents, LangGraph, Supabase checkpointer), OpenRouter, python-telegram-bot
+- Main themes: bounded pipelines vs model-driven agent loops, compacted memory
+- Case study: https://wyddy.tech/case-digest.html

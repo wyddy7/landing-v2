@@ -1,19 +1,19 @@
 # Video generation pipeline, rebuilt for throughput & cost
 
-> Case Study · at Hao
+> Case Study · at hao.vc
 
 - **Canonical:** https://wyddy.tech/case-video-pipeline.html
 - **Role:** Lead on the pipeline
 - **Scope:** Dialogue · TTS · images · compose · cost tracking
 - **Status:** Live in production
 
-Full video generation at Hao — topic to published mp4. Dialogue, TTS, images,
+Full video generation at hao.vc — topic to published mp4. Dialogue, TTS, images,
 FFmpeg compose, S3 upload, composed as a two-stage JSON API, parallelized across
 every I/O-bound call, deduplicated end-to-end.
 
 ## 01 · Context
 
-Hao builds AI-autonomous orchestrators. One of them needed a pipeline that turns a
+hao.vc builds AI-autonomous orchestrators. One of them needed a pipeline that turns a
 topic into a finished vertical video — scripted dialogue, voiced lines, generated
 images, composed with sprites and karaoke subtitles, uploaded to storage. Every
 generated unit costs real money across LLM calls, TTS, images, and storage, so
@@ -74,7 +74,7 @@ touching the other.
 - **Voice:** ElevenLabs TTS · pydub loudness norm
 - **Images:** pluggable image providers · provider-agnostic adapter · placeholder fallback
 - **Video:** FFmpeg · ASS karaoke subtitles · sprite overlays · background loop trimming
-- **Storage:** Backblaze S3 · boto3
+- **Storage:** S3 · boto3
 - **Infra:** Python 3.13 · uv · SOCKS5 proxy
 
 ---

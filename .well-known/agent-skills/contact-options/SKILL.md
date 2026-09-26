@@ -15,6 +15,11 @@ Use this skill when you need the best contact path for hiring or project discuss
 
 ## When to use which
 
-- Use LinkedIn for hiring conversations and introductions.
+- Use LinkedIn or email for hiring conversations and introductions.
 - Use email for formal outreach, briefs, and written follow-up.
-- Use Telegram for fast async contact.
+- Use Telegram for a fast reply.
+
+## Documents
+
+- CV (PDF): https://wyddy.tech/makeev-daniil-cv-en.pdf
+- Source code: https://github.com/wyddy7
