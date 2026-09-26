@@ -2,20 +2,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0c0c0b">
-<title>Case · Digest Bot — your channels in one read a day — Daniil Makeev</title>
-<meta name="description" content="Case study: Digest Bot — reads your Telegram channels and hands back one read-and-go digest a day. Deterministic reader pipeline, per-source fairness, cost-aware multi-model, live daily.">
+<title>Case · Digest, personalized AI digest — Daniil Makeev</title>
+<meta name="description" content="Digest, a personalized AI digest: a deterministic pipeline writes the daily digest; a separate stateful chat agent (DeepAgents, LangGraph) answers follow-ups with compacted memory.">
 <link rel="canonical" href="https://wyddy.tech/case-digest.html">
 <link rel="alternate" type="text/markdown" href="/case-digest.html.md" title="Markdown version">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://wyddy.tech/case-digest.html">
-<meta property="og:title" content="Case · Digest Bot — Daniil Makeev">
-<meta property="og:description" content="Reads your Telegram channels and hands back one read-and-go digest a day. Deterministic reader pipeline, fair selection, cost-aware multi-model.">
+<meta property="og:title" content="Case · Digest, personalized AI digest — Daniil Makeev">
+<meta property="og:description" content="Digest, a personalized AI digest: a deterministic pipeline writes the daily digest; a separate stateful chat agent (DeepAgents, LangGraph) answers follow-ups with compacted memory.">
 <meta property="og:image" content="https://wyddy.tech/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Case · Digest Bot — Daniil Makeev">
-<meta name="twitter:description" content="Reads your Telegram channels and hands back one read-and-go digest a day. Deterministic reader pipeline, fair selection, cost-aware multi-model.">
+<meta name="twitter:title" content="Case · Digest, personalized AI digest — Daniil Makeev">
+<meta name="twitter:description" content="Digest, a personalized AI digest: a deterministic pipeline writes the daily digest; a separate stateful chat agent (DeepAgents, LangGraph) answers follow-ups with compacted memory.">
 <meta name="twitter:image" content="https://wyddy.tech/assets/og-image.png">
 <link rel="icon" type="image/svg+xml" href="./assets/favicon-light.svg">
 
@@ -35,30 +35,27 @@
   --rule: #1e1e1c;
   --accent: oklch(83% 0.22 95);
   --sans: 'Jost', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --serif: var(--sans);
   --faint: #8a8780;
 
   --step--1: clamp(14.5px, 0.7rem + 0.65vw, 17px);
   --step-0:  clamp(18px, 1.08rem + 0.97vw, 23.5px);
   --step-1:  clamp(26px, 1.68rem + 2.16vw, 38px);
-  --step-2:  clamp(43px, 3rem + 2.4vw, 67px);
-  --step-3:  clamp(62px, 4.8rem + 3.6vw, 110px);
 
   --sp-xs: clamp(10px, 1.2vw, 17px);
   --sp-s:  clamp(17px, 2.4vw, 26px);
   --sp-m:  clamp(26px, 4.2vw, 53px);
   --sp-l:  clamp(43px, 6.6vw, 86px);
-  --sp-xl: clamp(62px, 8.4vw, 132px);
 
   --pad-x: clamp(24px, 6vw, 86px);
   --body-max: min(816px, 92vw);
+  /* vertical room the media may take on the first screen */
+  --media-h: calc(100svh - 150px);
 
-  --illus-bg: #111110;
   --pill-bg: #161614;
   --pill-text: #b0ada6;
-  --axis: #b0ada6;
 }
 
+/* ─── LIGHT THEME ── */
 html[data-theme="light"] {
   --bg: #faf4ed;
   --text: #26211c;
@@ -66,22 +63,13 @@ html[data-theme="light"] {
   --rule: #efe5da;
   --accent: #2c2620;
   --faint: #5c5650;
-  --illus-bg: #f2e9e1;
   --pill-bg: #f1e8d9;
   --pill-text: #45423b;
-  --axis: #7c756c;
 }
 html[data-theme="light"] { color-scheme: light; }
 html[data-theme="light"] body { background: var(--bg); color: var(--text); }
-html[data-theme="light"] .prose,
-html[data-theme="light"] .step-body { color: #5c5650; }
-html[data-theme="light"] .takeaway { background: rgba(60,40,20,0.05); }
-html[data-theme="light"] .takeaway-body { color: #26211c; }
 html[data-theme="light"] .btn-primary { background: #26211c; color: #faf4ed; }
 html[data-theme="light"] .case-footer .cta { background: #26211c; color: #faf4ed; }
-html[data-theme="light"] .diagram .node-bg { fill: #fffdf8; stroke: var(--rule); }
-html[data-theme="light"] .diagram .node-label { fill: #45423b; }
-html[data-theme="light"] .diagram .link { stroke: #cbbfa8; }
 
 html {
   background: var(--bg);
@@ -94,6 +82,7 @@ html {
 }
 body { min-height: 100vh; min-height: 100dvh; }
 
+/* ─── BACK LINK ── */
 .back-link {
   display: inline-flex;
   align-items: center;
@@ -109,16 +98,81 @@ body { min-height: 100vh; min-height: 100dvh; }
 .back-link:hover { color: var(--accent); }
 .back-link svg { width: 14px; height: 14px; flex-shrink: 0; }
 
+/* ─── MEDIA (first screen) ── */
+.case-media {
+  margin: 4px auto 0;
+  padding: 0 var(--pad-x);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.case-video {
+  display: block;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: #000;
+}
+
+/* carousel controls: ‹ dots › under the stage */
+.media-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.media-arrow {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--rule);
+  background: color-mix(in oklch, var(--rule) 18%, transparent);
+  color: var(--text);
+  font-size: 27px;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color .15s, border-color .15s, background .15s, transform .1s;
+  font-family: var(--sans);
+  padding: 0 0 3px 0;
+}
+.media-arrow:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent) 12%, transparent);
+}
+.media-arrow:active { transform: scale(.95); }
+.media-dots { display: flex; gap: 10px; }
+.media-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: var(--rule);
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+html[data-theme="light"] .media-dot { background: #e8dccd; }
+.media-dot:hover { transform: scale(1.2); }
+.media-dot.is-active,
+html[data-theme="light"] .media-dot.is-active { background: var(--accent); transform: scale(1.15); }
+
+/* ─── TEXT ── */
 .case-hero {
-  padding: var(--sp-l) var(--pad-x) var(--sp-m);
-  max-width: 1100px;
+  max-width: var(--body-max);
   margin: 0 auto;
+  padding: var(--sp-m) var(--pad-x) var(--sp-l);
 }
 .case-kicker {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: var(--sp-m);
+  margin-bottom: var(--sp-xs);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -147,7 +201,7 @@ body { min-height: 100vh; min-height: 100dvh; }
   line-height: 1.05;
   letter-spacing: -0.03em;
   color: var(--text);
-  margin-bottom: var(--sp-m);
+  margin-bottom: var(--sp-s);
   max-width: 15em;
 }
 .case-lede {
@@ -161,310 +215,76 @@ body { min-height: 100vh; min-height: 100dvh; }
   border-left: 2px solid var(--accent);
   padding-left: var(--sp-s);
 }
-
-.fact-bar {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--sp-s);
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: var(--sp-m) var(--pad-x);
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-}
-.fact { padding-right: var(--sp-s); border-right: 1px solid var(--rule); }
-.fact:last-child { border-right: none; padding-right: 0; }
-.fact-label {
-  display: block;
-  font-family: var(--sans);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-.fact-value {
-  display: block;
-  font-family: var(--sans);
+.case-results {
+  margin-top: var(--sp-s);
   font-size: var(--step--1);
-  color: var(--text);
-  line-height: 1.4;
-}
-
-.case-body {
-  max-width: var(--body-max);
-  margin: 0 auto;
-  padding: var(--sp-xl) var(--pad-x);
-}
-.case-sec {
-  padding: var(--sp-l) 0;
-  border-bottom: 1px solid var(--rule);
-}
-.case-sec:last-child { border-bottom: none; }
-.case-sec > h2 {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: var(--sp-m);
-}
-.case-sec > h2 .sec-num {
-  font-family: var(--sans);
-  font-weight: 700;
-  font-size: 11px;
-  color: var(--accent);
-  margin-right: 10px;
-  letter-spacing: 0.12em;
-}
-
-.prose {
-  font-family: var(--sans);
-  font-size: var(--step-0);
   color: var(--faint);
-  line-height: 1.88;
+  line-height: 1.7;
   text-wrap: pretty;
-  max-width: 42em;
 }
-.prose + .prose { margin-top: var(--sp-s); }
-.prose strong { color: var(--text); font-weight: 500; }
-
-.steps {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-m);
-  padding-left: var(--sp-m);
-  border-left: 2px solid var(--rule);
-}
-.step { position: relative; }
-.step::before {
-  content: "";
-  position: absolute;
-  left: calc(var(--sp-m) * -1 - 5px);
-  top: 8px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-.step-head {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-.step-title {
-  font-family: var(--sans);
-  font-size: var(--step-0);
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1.3;
-}
-.step-stamp {
-  font-size: 11px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-}
-.step-body {
-  font-family: var(--sans);
-  font-size: var(--step--1);
-  color: #8a8780;
-  line-height: 1.88;
-  text-wrap: pretty;
-  max-width: 42em;
-}
-
-.stack-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-.stack-row {
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  gap: 20px;
-  align-items: start;
-}
-.stack-cat {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding-top: 5px;
-  line-height: 1.3;
-}
-.stack-pills { display: flex; flex-wrap: wrap; gap: 9px; }
+.case-results strong { color: var(--text); font-weight: 600; }
+.stack-pills { display: flex; flex-wrap: wrap; gap: 9px; margin-top: var(--sp-s); }
 .stack-pill {
   font-size: 14px;
   color: var(--pill-text);
   background: var(--pill-bg);
   border: 1px solid var(--rule);
   border-radius: 3px;
-  padding: 7px 13px;
+  padding: 5px 12px;
   line-height: 1.4;
 }
-
-.case-demo {
-  margin: var(--sp-m) auto;
-  max-width: 360px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-.case-demo img,
-.case-demo video {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 6px;
-  border: 1px solid var(--rule);
-  background: #000;
-}
-.case-demo figcaption {
-  font-size: 11px;
+.case-note {
+  margin-top: var(--sp-s);
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--muted);
-  font-family: var(--sans);
-  text-align: center;
-  line-height: 1.4;
 }
+.case-note a { color: var(--muted); text-decoration: none; border-bottom: 1px dashed var(--muted); }
+.case-note a:hover { color: var(--accent); border-color: var(--accent); }
 
-.digest-demo {
-  margin: var(--sp-m) auto;
-  max-width: 540px;
+.hero-actions {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 14px;
+  margin-top: var(--sp-m);
 }
-.digest-frame {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-}
-.digest-stage {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-}
-.digest-stage img {
-  width: 100%;
-  height: auto;
-  display: none;
-  border-radius: 10px;
-  border: 1px solid var(--rule);
-}
-.digest-stage img.is-active { display: block; }
-.digest-arrow {
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1.5px solid var(--rule);
-  background: color-mix(in oklch, var(--rule) 18%, transparent);
-  color: var(--ink);
-  font-size: 27px;
-  line-height: 1;
-  cursor: pointer;
+.btn-primary {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  transition: color .15s, border-color .15s, background .15s, transform .1s;
+  gap: 9px;
+  background: var(--accent);
+  color: #0c0c0b;
   font-family: var(--sans);
-  padding: 0 0 3px 0;
-}
-.digest-arrow:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: color-mix(in oklch, var(--accent) 12%, transparent);
-}
-.digest-arrow:active { transform: scale(.95); }
-.digest-dots {
-  display: flex;
-  gap: 10px;
-  padding: 2px 0 0;
-}
-.digest-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  border: none;
-  padding: 0;
-  background: var(--rule);
-  cursor: pointer;
-  transition: background .15s, transform .1s;
-}
-.digest-dot:hover { transform: scale(1.2); }
-.digest-dot.is-active { background: var(--accent); transform: scale(1.15); }
-.digest-demo figcaption {
-  font-size: 11px;
-  color: var(--muted);
-  font-family: var(--sans);
-  text-align: center;
-  line-height: 1.66;
-  max-width: 34em;
-}
-
-.diagram {
-  margin-top: var(--sp-s);
-  padding: var(--sp-m) var(--sp-s);
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  background: #111110;
-}
-html[data-theme="light"] .diagram { background: var(--illus-bg); border-color: var(--rule); }
-.diagram svg { display: block; width: 100%; height: auto; max-height: 220px; }
-.diagram .node-bg { fill: #181715; stroke: #2e2e2a; stroke-width: 1; }
-.diagram .node-label { fill: #b0ada6; font-family: var(--sans); font-size: 11px; font-weight: 500; }
-.diagram .link { stroke: #3a3935; stroke-width: 1.2; fill: none; }
-.diagram .axis { stroke: var(--axis); stroke-width: 1; fill: none; }
-.diagram .dot { fill: var(--accent); }
-.diagram .pulse { fill: var(--accent); }
-
-.takeaway {
-  margin-top: var(--sp-m);
-  padding: var(--sp-m);
-  border-left: 2px solid var(--accent);
-  background: color-mix(in oklch, var(--accent) 3%, transparent);
-  max-width: 44em;
-  border-radius: 0 3px 3px 0;
-}
-.takeaway-title {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 12px;
+  padding: 13px 22px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: opacity .15s, transform .1s;
 }
-.takeaway-body {
-  font-family: var(--sans);
-  font-size: var(--step-0);
-  font-weight: 400;
-  line-height: 1.72;
+.btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   color: var(--text);
-  text-wrap: pretty;
+  border: 1px solid var(--rule);
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 13px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: border-color .15s, color .15s;
 }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
 
+/* ─── FOOTER ── */
 .case-footer {
-  padding: var(--sp-xl) var(--pad-x);
+  padding: var(--sp-l) var(--pad-x);
   text-align: center;
   border-top: 1px solid var(--rule);
-}
-.case-footer .prompt {
-  font-family: var(--sans);
-  font-weight: 600;
-  font-size: var(--step-0);
-  letter-spacing: -0.01em;
-  color: var(--text);
-  margin-bottom: var(--sp-m);
-  line-height: 1.35;
 }
 .case-footer .cta {
   display: inline-flex;
@@ -489,13 +309,7 @@ html[data-theme="light"] .diagram { background: var(--illus-bg); border-color: v
   text-decoration: none;
 }
 .case-footer .secondary:hover { color: var(--accent); }
-
-@media (max-width: 640px) {
-  :root { --step-3: clamp(38px, 9vw, 58px); --step-2: clamp(28px, 7vw, 42px); --step-1: clamp(18px, 5vw, 26px); }
-  .fact-bar { grid-template-columns: repeat(2, 1fr); gap: var(--sp-s); }
-  .fact:nth-child(2) { border-right: none; }
-  .stack-row { grid-template-columns: 1fr; gap: 8px; }
-}
+.case-footer .case-note { margin-top: var(--sp-xs); }
 
 /* ─── THEME TOGGLE — sun/moon slider (matches index) ── */
 .theme-toggle {
@@ -536,53 +350,24 @@ html[data-theme="light"] .theme-toggle .t-moon { color: var(--text); }
 }
 html[data-theme="light"] .theme-toggle .t-knob { transform: translate(0, -50%); }
 .theme-toggle:hover .t-track { border-color: var(--accent); }
-
-/* ─── RELATED CASE CARD ── */
-.related-case {
-  margin: var(--sp-l) auto 0;
-  max-width: var(--body-max);
-  padding: 0 var(--pad-x);
+/* ─── DIGEST SCREENS ── */
+.digest-stage {
+  position: relative;
+  width: min(460px, 100%, calc(var(--media-h) * 680 / 1267));
 }
-.related-case-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-s);
-  padding: var(--sp-m);
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  text-decoration: none;
-  color: inherit;
-  transition: border-color .15s, transform .1s;
-}
-.related-case-card:hover { border-color: var(--accent); transform: translateY(-1px); }
-.related-case-kicker {
+.digest-stage a { display: none; cursor: zoom-in; }
+.digest-stage a.is-active { display: block; }
+.digest-stage img {
   display: block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-.related-case-title {
-  font-family: var(--sans);
-  font-weight: 600;
-  font-size: var(--step-0);
-  line-height: 1.2;
-  color: var(--text);
-  letter-spacing: -0.015em;
-}
-.related-case-arrow {
-  font-size: var(--step-1);
-  color: var(--accent);
-  flex-shrink: 0;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--rule);
 }
 </style>
 </head>
 <body>
 
-<!-- THEME TOGGLE -->
 <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-label="Toggle color mode" title="Toggle color mode">
   <svg class="t-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
   <span class="t-track" aria-hidden="true"><span class="t-knob"></span></span>
@@ -594,238 +379,47 @@ html[data-theme="light"] .theme-toggle .t-knob { transform: translate(0, -50%); 
   Back to portfolio
 </a>
 
+<figure class="case-media" id="digestDemo" aria-label="One daily digest in Telegram">
+  <div class="digest-stage">
+    <a class="is-active" href="./assets/digest-demo-1.jpg" target="_blank" rel="noopener"><img src="./assets/digest-demo-1.jpg" alt="Top of a daily digest: source-attributed bullets with inline insights." fetchpriority="high" decoding="async" width="680" height="1267"></a>
+    <a href="./assets/digest-demo-2.jpg" target="_blank" rel="noopener"><img src="./assets/digest-demo-2.jpg" alt="End of the digest: short one-liners, a section picked for the reader, and the list of posts checked." loading="lazy" decoding="async" width="680" height="1260"></a>
+  </div>
+  <div class="media-controls">
+    <button class="media-arrow media-prev" type="button" aria-label="Previous screen">‹</button>
+    <div class="media-dots">
+      <button class="media-dot is-active" type="button" data-i="0" aria-label="Screen 1"></button>
+      <button class="media-dot" type="button" data-i="1" aria-label="Screen 2"></button>
+    </div>
+    <button class="media-arrow media-next" type="button" aria-label="Next screen">›</button>
+  </div>
+</figure>
+
 <section class="case-hero">
   <div class="case-kicker">
-    <span>Case Study</span>
+    <span>Digest</span>
     <span class="kicker-dot" aria-hidden="true"></span>
-    <span class="kicker-company">Applied R&amp;D · live</span>
+    <span class="kicker-company">R&amp;D at hao.vc · live daily</span>
   </div>
-  <h1 class="case-title">Digest Bot — your channels, distilled to 60 seconds a day.</h1>
-  <p class="case-lede">
-    Follow 10–15 Telegram channels without the 30-minute scroll. Digest reads them for you and boils the day into one morning read, tuned to what you care about: the substance inline, not a list of links to chase. Want more on something? Ask it.
-  </p>
+  <h1 class="case-title">Personalized AI digest</h1>
+  <p class="case-lede">A deterministic pipeline writes the daily digest; a separate stateful chat agent answers follow-ups with compacted memory.</p>
+  <div class="stack-pills" aria-label="Stack">
+    <span class="stack-pill">Python</span>
+    <span class="stack-pill">DeepAgents</span>
+    <span class="stack-pill">LangGraph</span>
+    <span class="stack-pill">OpenRouter</span>
+    <span class="stack-pill">Supabase</span>
+  </div>
+  <div class="hero-actions">
+    <a class="btn-primary" href="https://github.com/wyddy7/claude-digest" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><path d="M15 3h6v6"></path><path d="M10 14L21 3"></path></svg> Source on GitHub</a>
+  </div>
 </section>
 
-<div class="fact-bar">
-  <div class="fact"><span class="fact-label">Role</span><span class="fact-value">Built end-to-end</span></div>
-  <div class="fact"><span class="fact-label">Scope</span><span class="fact-value">Reader · selection · output · chat · cost</span></div>
-  <div class="fact"><span class="fact-label">Surface</span><span class="fact-value">Telegram bot</span></div>
-  <div class="fact"><span class="fact-label">Status</span><span class="fact-value">Live · running daily</span></div>
-</div>
-
-<div class="case-body">
-
-  <section class="case-sec">
-    <h2><span class="sec-num">01</span>Context</h2>
-
-    <figure class="digest-demo" id="digestDemo" aria-label="One daily digest in Telegram, start to finish">
-      <div class="digest-frame">
-        <button class="digest-arrow digest-prev" type="button" aria-label="Previous screen">‹</button>
-        <div class="digest-stage">
-          <img class="is-active" data-shot="0" src="./assets/digest-demo-1.jpg" alt="Top of a daily digest — source-attributed bullets with inline insights." loading="lazy" decoding="async" width="680" height="1267">
-          <img data-shot="1" src="./assets/digest-demo-2.jpg" alt="Tail one-liners, a 'Personally for you' section, and a receipt of posts checked." loading="lazy" decoding="async" width="680" height="1260">
-        </div>
-        <button class="digest-arrow digest-next" type="button" aria-label="Next screen">›</button>
-      </div>
-      <div class="digest-dots" role="tablist">
-        <button class="digest-dot is-active" type="button" data-shot="0" aria-label="Screen 1"></button>
-        <button class="digest-dot"           type="button" data-shot="1" aria-label="Screen 2"></button>
-      </div>
-      <figcaption>One real digest, start to finish — source-attributed bullets with inline insights, a “Personally for you” section, and a receipt of what it checked. A few messages; one read.</figcaption>
-    </figure>
-
-    <p class="prose">
-      I follow more channels than I can read. Most days I skim, miss what mattered, and still lose half an hour scrolling. I wanted the opposite: <strong>one read</strong> in the morning — the real substance of everything worth knowing — and done.
-    </p>
-    <p class="prose">
-      The naive version — paste the posts together, ask an LLM to summarize — produces a bland wall nobody reads: dominated by whichever channel posted most, padded with ads, blind to the article sitting behind a link. Each of those is a separate piece of plumbing to fix, and that plumbing is most of what the project actually is.
-    </p>
-  </section>
-
-  <section class="case-sec">
-    <h2><span class="sec-num">02</span>Architecture</h2>
-    <p class="prose">
-      A <strong>deterministic pipeline</strong>, not an agent. Each post is screened by a cheap model for ads; links worth opening are fetched and read down to the article text; posts are selected with <strong>per-source fairness</strong> so no single channel dominates; then one stronger model writes the digest, tuned to your profile. Every stage has an explicit model and token budget, and the whole path is offline-testable — no agent framework on the thing that has to run reliably every single day.
-    </p>
-
-    <div class="diagram" aria-hidden="true">
-      <svg viewBox="-18 0 498 160" preserveAspectRatio="xMidYMid meet">
-        <!-- channels -->
-        <circle cx="14" cy="80" r="6" class="dot"></circle>
-        <text x="14" y="106" text-anchor="middle" class="node-label">channels</text>
-        <!-- ad-filter -->
-        <rect x="44" y="68" width="66" height="24" rx="3" class="node-bg"></rect>
-        <text x="77" y="83" text-anchor="middle" class="node-label">ad-filter</text>
-        <text x="77" y="108" text-anchor="middle" class="node-label">cheap</text>
-        <path class="link" d="M20 80 L44 80"></path>
-        <!-- reader -->
-        <rect x="122" y="68" width="62" height="24" rx="3" class="node-bg"></rect>
-        <text x="153" y="83" text-anchor="middle" class="node-label">reader</text>
-        <text x="153" y="108" text-anchor="middle" class="node-label">fetch</text>
-        <path class="link" d="M110 80 L122 80"></path>
-        <!-- select -->
-        <rect x="196" y="68" width="62" height="24" rx="3" class="node-bg"></rect>
-        <text x="227" y="83" text-anchor="middle" class="node-label">select</text>
-        <text x="227" y="108" text-anchor="middle" class="node-label">fair</text>
-        <path class="link" d="M184 80 L196 80"></path>
-        <!-- write -->
-        <rect x="270" y="68" width="62" height="24" rx="3" class="node-bg"></rect>
-        <text x="301" y="83" text-anchor="middle" class="node-label">write</text>
-        <text x="301" y="108" text-anchor="middle" class="node-label">strong</text>
-        <path class="link" d="M258 80 L270 80"></path>
-        <!-- you -->
-        <path class="link" d="M332 80 L434 80"></path>
-        <circle cx="442" cy="80" r="7" class="pulse"></circle>
-        <text x="442" y="106" text-anchor="middle" class="node-label">you</text>
-      </svg>
-    </div>
-  </section>
-
-  <section class="case-sec">
-    <h2><span class="sec-num">03</span>What I built</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-head"><span class="step-title">A reader that goes behind the link</span><span class="step-stamp">— reader</span></div>
-        <p class="step-body">A cheap triage call decides which links are worth opening; then a fixed fetch → resolve-one-hop → extract pipeline pulls the actual article text. A channel that only posts headlines and links becomes real content in the digest, not a teaser you have to chase.</p>
-      </div>
-      <div class="step">
-        <div class="step-head"><span class="step-title">Fair selection across sources</span><span class="step-stamp">— selection</span></div>
-        <p class="step-body">Per-source fairness and tiering in the picker, so one high-volume channel can't monopolize the digest. A bounded set of body items plus a compressed tail — enough to feel complete without becoming the wall it was trying to replace.</p>
-      </div>
-      <div class="step">
-        <div class="step-head"><span class="step-title">Read-and-go output</span><span class="step-stamp">— output</span></div>
-        <p class="step-body">The digest carries the facts inline plus a short "what this means for you" — you read the message and you're done. No teaser that funnels you to a website, no list of links to tap through. The message is the product.</p>
-      </div>
-      <div class="step">
-        <div class="step-head"><span class="step-title">Ask it follow-ups</span><span class="step-stamp">— chat agent</span></div>
-        <p class="step-body">On top of the daily digest sits a stateful conversational agent (deepagents / LangGraph): ask "more on this" or "what did I miss last week?" and it answers from your digest history, with conversation state checkpointed to Supabase so the thread survives a restart.</p>
-      </div>
-      <div class="step">
-        <div class="step-head"><span class="step-title">Cost-aware by stage</span><span class="step-stamp">— cost</span></div>
-        <p class="step-body">A per-stage model registry: cheap models for ad-filter and triage, a stronger one only for the final write, each with explicit token caps and structured cost logging. Clean dependency injection keeps the deterministic path offline-testable end to end.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="case-sec">
-    <h2><span class="sec-num">04</span>Under the hood</h2>
-    <p class="prose">
-      Most of the decisions that make a digest worth opening happen before the summary call ever runs:
-    </p>
-    <div class="steps">
-      <div class="step">
-        <div class="step-head"><span class="step-title">"A summary nobody reads"</span><span class="step-stamp">— read-and-go</span></div>
-        <p class="step-body">A generic roundup gets skimmed once and abandoned. Pulling facts inline, adding a so-what, and cutting the tap-out turns it into something read daily — the single biggest lever on whether it actually gets opened each morning.</p>
-      </div>
-      <div class="step">
-        <div class="step-head"><span class="step-title">"One loud channel drowned the rest"</span><span class="step-stamp">— fairness</span></div>
-        <p class="step-body">Raw recency lets a firehose channel eat the whole digest. Per-source fairness and tiering cap any one source's share, so a quiet channel's one good post still surfaces.</p>
-      </div>
-      <div class="step">
-        <div class="step-head"><span class="step-title">"A link channel was just headlines"</span><span class="step-stamp">— 1-hop read</span></div>
-        <p class="step-body">Aggregator channels post a line and a link. A bounded fetch-and-extract reads the article behind it, so those posts contribute substance instead of a headline the reader still has to go open.</p>
-      </div>
-      <div class="step">
-        <div class="step-head"><span class="step-title">"Ads in the digest"</span><span class="step-stamp">— cached filter</span></div>
-        <p class="step-body">A cheap binary ad-classifier runs before anything expensive, and its verdict is cached per post — so ad screening costs almost nothing and the same post is never paid for twice.</p>
-      </div>
-      <div class="step">
-        <div class="step-head"><span class="step-title">"Cost crept up per digest"</span><span class="step-stamp">— model tiering</span></div>
-        <p class="step-body">Spend follows attention, not habit: the strong model writes; everything upstream runs on cheap models with hard token caps. Cost is logged per stage, so a regression is visible the next day, not at the end of the month.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="case-sec">
-    <h2><span class="sec-num">05</span>Outcome</h2>
-    <p class="prose">
-      Live, delivering a digest every day — and it's the thing I actually open in the morning instead of the channels.
-    </p>
-
-    <div class="takeaway">
-      <div class="takeaway-title">Takeaway</div>
-      <p class="takeaway-body">
-        A digest lives or dies on the unglamorous parts around the summary: a reader that opens the link instead of quoting the headline, a picker that won't let one loud channel bury the rest, an ad filter that runs before anything costs money, and an output you finish inside the message instead of tapping through. Get those right and it gets opened again tomorrow — for something daily, the only test that counts.
-      </p>
-    </div>
-  </section>
-
-  <section class="case-sec">
-    <h2><span class="sec-num">06</span>Stack</h2>
-    <div class="stack-grid">
-      <div class="stack-row">
-        <span class="stack-cat">Bot</span>
-        <div class="stack-pills">
-          <span class="stack-pill">python-telegram-bot</span>
-          <span class="stack-pill">async</span>
-        </div>
-      </div>
-      <div class="stack-row">
-        <span class="stack-cat">Pipeline</span>
-        <div class="stack-pills">
-          <span class="stack-pill">deterministic stages</span>
-          <span class="stack-pill">dependency injection</span>
-          <span class="stack-pill">offline-testable</span>
-        </div>
-      </div>
-      <div class="stack-row">
-        <span class="stack-cat">Reader</span>
-        <div class="stack-pills">
-          <span class="stack-pill">trafilatura</span>
-          <span class="stack-pill">fetch + 1-hop resolve</span>
-        </div>
-      </div>
-      <div class="stack-row">
-        <span class="stack-cat">Models</span>
-        <div class="stack-pills">
-          <span class="stack-pill">OpenRouter</span>
-          <span class="stack-pill">multi-model registry</span>
-          <span class="stack-pill">token caps</span>
-        </div>
-      </div>
-      <div class="stack-row">
-        <span class="stack-cat">Chat agent</span>
-        <div class="stack-pills">
-          <span class="stack-pill">deepagents</span>
-          <span class="stack-pill">LangGraph</span>
-          <span class="stack-pill">Supabase checkpointer</span>
-        </div>
-      </div>
-      <div class="stack-row">
-        <span class="stack-cat">Data · deploy</span>
-        <div class="stack-pills">
-          <span class="stack-pill">Supabase</span>
-          <span class="stack-pill">Docker</span>
-          <span class="stack-pill">VPS</span>
-        </div>
-      </div>
-    </div>
-
-    <p style="font-size:13px;line-height:1.6;color:var(--muted);margin-top:var(--sp-l);max-width:44em;">
-      Open source under AGPL-3.0. <a href="https://github.com/wyddy7/claude-digest" target="_blank" style="color:var(--muted);text-decoration:none;border-bottom:1px dashed var(--muted)">Source on GitHub</a>.
-    </p>
-  </section>
-
-</div>
-
-<!-- RELATED CASE -->
-<div class="related-case">
-  <a class="related-case-card" href="./case-browd.html">
-    <div>
-      <span class="related-case-kicker">Another case study</span>
-      <span class="related-case-title">Browd — an AI agent that operates your browser</span>
-    </div>
-    <span class="related-case-arrow">→</span>
-  </a>
-</div>
-
 <footer class="case-footer">
-  <div class="prompt">Want a digest like this built for your team or domain?</div>
   <a class="cta" href="https://t.me/wyddy7" target="_blank" rel="noopener">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
     Get in touch
   </a>
-  <div><a class="secondary" href="https://github.com/wyddy7/claude-digest" target="_blank">or read the source on GitHub →</a></div>
+  <div><a class="secondary" href="./case-video-pipeline.html">Next case: Video generation pipeline →</a></div>
 </footer>
 
 <script>
@@ -848,15 +442,12 @@ html[data-theme="light"] .theme-toggle .t-knob { transform: translate(0, -50%); 
     });
   }
 })();
-
 // ─── digest screenshot carousel ─────────────────────────────────
 (function () {
   const root = document.getElementById('digestDemo');
   if (!root) return;
-  const shots = Array.from(root.querySelectorAll('.digest-stage img'));
-  const dots  = Array.from(root.querySelectorAll('.digest-dot'));
-  const prev  = root.querySelector('.digest-prev');
-  const next  = root.querySelector('.digest-next');
+  const shots = Array.from(root.querySelectorAll('.digest-stage a'));
+  const dots  = Array.from(root.querySelectorAll('.media-dot'));
   let idx = 0;
 
   function show(i) {
@@ -865,8 +456,8 @@ html[data-theme="light"] .theme-toggle .t-knob { transform: translate(0, -50%); 
     dots.forEach((d, k) => d.classList.toggle('is-active', k === idx));
   }
 
-  prev.addEventListener('click', () => show(idx - 1));
-  next.addEventListener('click', () => show(idx + 1));
+  root.querySelector('.media-prev').addEventListener('click', () => show(idx - 1));
+  root.querySelector('.media-next').addEventListener('click', () => show(idx + 1));
   dots.forEach((d, k) => d.addEventListener('click', () => show(k)));
   show(0);
 })();

@@ -24,15 +24,15 @@
   <text x="72" y="296" font-family="Cormorant Garamond, Georgia, 'Times New Roman', serif" font-style="italic" font-weight="400" font-size="120" fill="#1a1917" letter-spacing="-3">Daniil Makeev</text>
 
   <!-- role line -->
-  <text x="72" y="352" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif" font-size="26" fill="#3a3834" letter-spacing="0.4" font-weight="500">AI Engineer · production RAG &amp; GenAI pipelines</text>
+  <text x="72" y="352" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif" font-size="26" fill="#3a3834" letter-spacing="0.4" font-weight="500">Senior AI / LLM Engineer · agents, RAG, evals, LLMOps</text>
 
   <!-- project strip -->
-  <text x="72" y="432" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#78746b" letter-spacing="1">NetWho — multi-tenant contact RAG</text>
-  <text x="72" y="462" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#78746b" letter-spacing="1">Video generation pipeline — 6× faster · −60% cost</text>
-  <text x="72" y="492" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#78746b" letter-spacing="1">Digest Bot — self-hosted, running daily</text>
+  <text x="72" y="432" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#78746b" letter-spacing="1">hao.vc — video pipeline 6× faster · −60% cost</text>
+  <text x="72" y="462" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#78746b" letter-spacing="1">Browser AI agent — Chrome Web Store, open source</text>
+  <text x="72" y="492" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19" fill="#78746b" letter-spacing="1">Contact RAG · AI digest — R&amp;D at hao.vc</text>
 
   <!-- footer -->
   <line x1="72" y1="548" x2="1128" y2="548" stroke="#e0ddd4" stroke-width="1"/>
   <text x="72" y="586" font-family="-apple-system, sans-serif" font-size="18" fill="#1a1917" letter-spacing="3" font-weight="700">WYDDY.TECH</text>
-  <text x="1128" y="586" text-anchor="end" font-family="-apple-system, sans-serif" font-size="16" fill="#78746b" letter-spacing="1">agent systems · RAG · generation</text>
+  <text x="1128" y="586" text-anchor="end" font-family="-apple-system, sans-serif" font-size="16" fill="#78746b" letter-spacing="1">Yerevan · remote or relocation</text>
 </svg>
