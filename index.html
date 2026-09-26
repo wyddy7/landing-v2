@@ -4,6 +4,7 @@
 <meta name="theme-color" content="#0c0c0b">
 <script>
 /* Restore the saved palette before the first paint, including the fallback. */
+document.documentElement.classList.add('js');
 try {
   if (localStorage.getItem('dm-landing-mode') === 'light') {
     document.documentElement.dataset.theme = 'light';
@@ -19,6 +20,9 @@ try {
 <meta property="og:url" content="https://wyddy.tech/">
 <meta property="og:title" content="Daniil Makeev — Senior AI / LLM Engineer">
 <meta property="og:description" content="Senior AI / LLM Engineer. Builds production AI agents, RAG pipelines and content-generation systems — end to end.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Daniil Makeev","jobTitle":"Senior AI / LLM Engineer","url":"https://wyddy.tech/","email":"mailto:wyddy.work@gmail.com","address":{"@type":"PostalAddress","addressLocality":"Yerevan","addressCountry":"AM"},"worksFor":{"@type":"Organization","name":"hao.vc","url":"https://hao.vc"},"alumniOf":{"@type":"CollegeOrUniversity","name":"Bauman Moscow State Technical University"},"knowsLanguage":["en","ru"],"knowsAbout":["Large language models","AI agents","Retrieval-augmented generation","LLM evaluation","LangGraph","Python"],"sameAs":["https://github.com/wyddy7","https://www.linkedin.com/in/daniil-makeev/","https://t.me/wyddy7","https://x.com/wyddy7"]}
+</script>
 <meta property="og:image" content="https://wyddy.tech/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,7 +34,7 @@ try {
 
 <link rel="preload" href="assets/fonts/Jost-wght.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* Jost (OFL, self-hosted, Latin subset, variable 100–900). Decision 2026-09-07: webfont allowed; see auto-docs DESIGN.md → Typography. */
+/* Jost (OFL, self-hosted, Latin subset, variable 100–900). */
 @font-face { font-family: "Jost"; font-weight: 100 900; font-display: swap; src: url(assets/fonts/Jost-wght.woff2) format("woff2"); }
 @font-face { font-family: "Jost"; font-weight: 100 900; font-style: italic; font-display: swap; src: url(assets/fonts/Jost-Italic-wght.woff2) format("woff2"); }
 </style>
@@ -60,6 +64,7 @@ try {
 
   --pad-x: clamp(24px, 6vw, 48px);
   --pad-y: clamp(56px, 9vh, 100px);
+  --col-pad-b: clamp(20px, 3vh, 32px);   /* shared bottom line of both desktop columns */
 }
 
 html[data-theme="light"] {
@@ -117,9 +122,15 @@ a { color: inherit; }
     top: 0;
     height: 100vh;
     max-height: 100vh;
-    padding-bottom: var(--pad-y);
+    padding-bottom: var(--col-pad-b);
     justify-content: space-between;
   }
+  /* Both columns share the top line (name = first chat line) and the bottom line (icons = chips).
+     When the column is taller than the screen, the mark gives up height — never the icons. */
+  .sidebar-top { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .sidebar .mark-slot { flex: 0 1 300px; align-self: flex-start; height: auto; min-height: 120px; max-height: 300px; aspect-ratio: 1; width: auto; max-width: min(100%, 300px); }
+  /* the reserved chip row sits above the chips, so the visible chips always share the icons' line */
+  .chat-chips { align-content: flex-end; }
 }
 
 .name {
@@ -162,12 +173,20 @@ a { color: inherit; }
   color: #5a9e5a;
 }
 html[data-theme="light"] .avail { color: #3f7a3f; }
-.avail-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: currentColor; flex-shrink: 0;
-  animation: pulse 2.6s ease-in-out infinite;
-}
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+/* Working line under the role, in the manner of a CLI agent's status: a hand-drawn ink blob that breathes
+   (four drawn sizes and back, 2 frames a second, the extremes held 1 s) next to a verb that switches every few seconds. Quiet by design —
+   metadata size and colour, no accent (amber stays with the name's dot and the primary actions). The full
+   sentence stays in the DOM for crawlers and screen readers (and is what no-JS shows). */
+.tagline .spin { display: none; }
+html.js .tagline .spin { display: inline-flex; align-items: center; gap: .5em; font-size: var(--step--1); line-height: 1.5; }
+html.js .tagline .spin-full { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.spin-word { white-space: nowrap; color: var(--muted); }
+.spin-mark { flex: none; display: inline-grid; place-items: center; width: 1.05em; height: 1.05em; }
+.spin-blob { width: 100%; height: 100%; fill: var(--muted); }
+
+
 
 /* nav — vertical, line grows on hover/active */
 .nav { margin-top: clamp(36px, 5vh, 56px); }
@@ -673,7 +692,257 @@ html.glass-intro-active .mark-placeholder { visibility: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .avail-dot { animation: none; }
+}
+
+/* ── CHAT SHOWCASE ──
+   Right column = a conversation that plays itself. Messenger type rule: two
+   sizes only inside the chat — --chat-fs for every line of content (text, links,
+   cards, chips), --chat-fs-s for service text (time, status). Without JS the
+   original column (.legacy) is shown instead. */
+.chat { display: none; --chat-fs: var(--step--1); --chat-fs-s: 12px; }
+html.js .chat { display: flex; }
+html.js .legacy { display: none; }
+.chat {
+  flex-direction: column;
+  padding-top: var(--pad-y);
+  padding-bottom: var(--col-pad-b);
+  min-width: 0;
+}
+@media (min-width: 1024px) {
+  .chat { position: sticky; top: 0; height: 100vh; height: 100dvh; }
+}
+@media (max-width: 1023px) {
+  .chat { height: min(86dvh, 780px); padding-top: clamp(32px, 5vh, 56px); }
+}
+.chat-log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-anchor: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 2px 16px 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+.chat-log > * { flex-shrink: 0; }
+/* content scrolls away under the pinned bar through a soft fade, not a hard crop */
+.chat-log { padding-top: 14px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22px, #000 calc(100% - 10px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 22px, #000 calc(100% - 10px), transparent 100%); }
+.chat .chat-bubble { max-width: 82%; position: relative; font-size: var(--chat-fs); line-height: 1.5; }
+.chat .chat-bubble--q { padding-right: 56px; }
+.chat .chat-bubble--a { max-width: 94%; width: fit-content; padding: 0; overflow: hidden; }
+.msg-media { display: block; background: #000; line-height: 0; }
+.msg-media video, .msg-media img { display: block; width: 100%; height: auto; pointer-events: none; }
+.msg-media--portrait { display: flex; justify-content: center; }
+.msg-media--portrait video { width: auto; max-width: 100%; max-height: 380px; }
+.msg-media--card { background: transparent; line-height: normal; padding: 12px 12px 0; }
+.msg-media--card .mock-digest { display: block; width: 100%; margin: 0; }
+.msg-media--card .digest-head, .msg-media--card .digest-item { display: flex; }
+.msg-media--card .digest-item { flex-direction: column; }
+.msg-media--card .digest-head .d-title,
+.msg-media--card .digest-head .d-tune,
+.msg-media--card .digest-item .d-src { font-size: var(--chat-fs-s); letter-spacing: 0.02em; text-transform: none; font-weight: 500; }
+.msg-media--card .digest-item .d-name,
+.msg-media--card .digest-item .d-sum { font-size: var(--chat-fs); }
+.msg-body { padding: 10px 14px; }
+.msg-body p + p { margin-top: 8px; }
+.msg-body strong { color: var(--text); font-weight: 600; }
+.msg-body a:not(.entry-btn):not(.entry-link) {
+  color: var(--text); text-decoration: none; font-weight: 500;
+  border-bottom: 1px solid color-mix(in oklch, var(--accent) 55%, transparent);
+}
+.msg-meta { font-size: var(--chat-fs-s); color: var(--muted); margin-top: 8px; letter-spacing: 0.02em; }
+.msg-links { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-top: 12px; }
+.msg-links .entry-btn, .msg-links .entry-link { font-size: var(--chat-fs); }
+.msg-links .entry-btn { padding: 6px 13px; }
+.msg-skills { display: flex; flex-direction: column; gap: 6px; }
+.msg-skills .skill-row { grid-template-columns: 110px 1fr; gap: 14px; }
+.msg-skills .skill-cat { font-size: var(--chat-fs); letter-spacing: 0; text-transform: none; font-weight: 600; color: var(--text); }
+.msg-skills .skill-list { font-size: var(--chat-fs); line-height: 1.5; }
+.msg-time {
+  display: block;
+  text-align: right;
+  margin: 4px 0 0 14px;
+  font-size: var(--chat-fs-s);
+  line-height: 1;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.chat-bubble--q .msg-time { position: absolute; right: 12px; bottom: 10px; margin: 0; color: color-mix(in oklch, currentColor 60%, transparent); }
+.chat .fade { animation: chat-in .32s ease-out both; }
+@keyframes chat-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.msg-body .w { animation: word-in .24s ease-out both; }
+@keyframes word-in { from { opacity: 0; } to { opacity: 1; } }
+.caret { display: inline-block; width: 1px; height: 1em; margin-left: 1px; vertical-align: -2px; background: currentColor; animation: pulse 1s steps(1) infinite; }
+
+.chat-status { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; font-size: var(--chat-fs-s); color: var(--muted); padding: 2px 4px; }
+.chat-spinner { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule); border-top-color: var(--muted); animation: chat-spin .7s linear infinite; }
+@keyframes chat-spin { to { transform: rotate(360deg); } }
+
+.chat-foot { padding-top: 12px; }
+.chat-chips { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; align-items: flex-start; }
+.chat-chip {
+  font: inherit;
+  font-size: var(--chat-fs);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--text);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s, opacity .15s;
+}
+.chat-chip:hover { color: var(--accent); border-color: var(--accent); }
+.chat-chips .chat-chip { opacity: .8; }
+.chat-chips .chat-chip:hover { opacity: 1; }
+.msg-when { font-size: var(--chat-fs-s); color: var(--muted); }
+.cv-view { padding: 4px 4px 8px; font-size: calc(var(--chat-fs) - 1px); line-height: 1.45; }
+.cv-view > * { transition: none; }
+.cv-lead { color: var(--text); }
+.cv-lead strong { font-weight: 650; }
+.cv-meta { font-size: var(--chat-fs-s); color: var(--muted); margin-top: 4px; letter-spacing: 0.02em; }
+.cv-role { display: grid; grid-template-columns: 128px 1fr; gap: 3px 14px; padding-top: 10px; margin-top: 10px; border-top: 1px solid var(--rule); }
+.cv-role .cv-when { display: flex; flex-direction: column; gap: 3px; font-size: var(--chat-fs-s); color: var(--muted); padding-top: 2px; letter-spacing: 0.02em; white-space: nowrap; }
+.cv-when .cv-co { font-size: var(--chat-fs); font-weight: 650; color: var(--text); letter-spacing: 0; white-space: nowrap; }
+.cv-title { color: var(--text); }
+.cv-title strong { font-weight: 650; }
+.cv-desc { color: var(--faint); margin-top: 2px; }
+.cv-desc strong { color: var(--text); font-weight: 600; }
+.cv-summary { color: var(--faint); margin-top: 10px; }
+.cv-project { color: var(--text); font-weight: 600; margin-top: 12px; }
+.cv-list { margin: 4px 0 0; padding-left: 1.1em; color: var(--faint); }
+.cv-list li + li { margin-top: 3px; }
+.cv-list li::marker { transition: color .32s ease-out; }
+.cv-list li.li-forming::marker { color: transparent; }
+/* each point opens with a few words set as its heading; the rest of the line stays muted */
+.cv-list .cv-k { color: var(--text); font-weight: 600; }
+@media (max-width: 600px) { .cv-role { grid-template-columns: 1fr; } }
+.chat-pin {
+  display: flex; align-items: center; gap: 12px;
+  width: calc(100% - 4px); margin: 0 2px 4px;
+  padding: 9px 20px 9px 16px;
+  font: inherit; text-align: left; color: var(--text);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  border: 1px solid var(--rule); border-radius: 26px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.chat-pin:hover { border-color: color-mix(in oklch, var(--accent) 60%, var(--rule)); }
+.pin-rule { flex: none; align-self: stretch; width: 2px; border-radius: 2px; background: var(--accent); }
+.pin-body { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35; }
+.pin-title { font-size: var(--chat-fs-s); font-weight: 600; color: color-mix(in oklch, var(--accent) 85%, var(--text)); }
+.pin-text { font-size: var(--chat-fs); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pin-icon { flex: none; width: 18px; height: 18px; color: var(--muted); }
+html[data-theme="light"] .chat-pin { background: #fffdf8; border-color: #e2d6c6; }
+html[data-theme="light"] .pin-title { color: var(--text); }
+.socials .cv-soon { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); opacity: .35; cursor: default;
+  font-size: var(--step--2); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; line-height: 1; }
+.socials .cv-soon svg { width: 21px; height: 21px; }
+.chat .dissolve { animation: chat-dissolve .5s ease-in both; pointer-events: none; }
+@keyframes chat-dissolve { to { opacity: 0; filter: blur(12px); transform: translateY(-10px) scale(.98); } }
+.bw { display: inline-block; white-space: nowrap; }
+.bl { display: inline-block; animation: blur-in .32s ease-out both; }
+@keyframes blur-in { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
+@media (prefers-reduced-motion: reduce) { .chat .dissolve, .bl { animation: none; } }
+.msg-body p + p { margin-top: 12px; }
+.chat-chip.is-used { color: var(--faint); background: transparent; }
+.chat-chips .chat-chip.is-dup { opacity: .38; }
+.chat-chips .chat-chip.is-dup:hover { opacity: .7; }
+.chat-chip:disabled { cursor: default; opacity: .45; }
+html[data-theme="light"] .chat-chip { border-color: #e2d6c6; background: #fffdf8; }
+html[data-theme="light"] .chat-chip.is-used { background: transparent; }
+
+/* Phone and tablet: the first screen is the identity column; the chat is a canvas of its own below it.
+   "About me ↓" slides it up over the page, "↑ Back to main" (or the system back gesture) slides it away. */
+.chat-enter, .chat-back { display: none; }
+@media (max-width: 1023px) {
+  html.js .chat {
+    position: fixed; inset: 0; z-index: 40;
+    height: 100vh; height: 100dvh;
+    padding: calc(env(safe-area-inset-top, 0px) + 10px) var(--pad-x) calc(env(safe-area-inset-bottom, 0px) + 14px);
+    background: var(--bg);
+    transform: translateY(100%); visibility: hidden;
+    transition: transform .45s cubic-bezier(.2, .7, .2, 1), visibility 0s .45s;
+  }
+  html.js.chat-open .chat { transform: none; visibility: visible; transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
+  html.js.chat-open, html.js.chat-open body { overflow: hidden; }
+  html.js .sidebar { transition: transform .45s cubic-bezier(.2, .7, .2, 1), opacity .45s; }
+  /* First screen = one viewport: identity text on top (left-aligned, as on desktop), the mark centred in
+     whatever height is left (square, 80–340 px), socials and the full-width "About me ↓" on the bottom padding.
+     No per-device numbers: the mark is the only element that gives or takes height. */
+  html.js .sidebar { height: 100vh; height: 100svh; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 28px); }
+  html.js .sidebar-top { display: contents; }
+  /* auto margins take the height the mark does not use, so the socials + button always sit on the bottom
+     padding and the mark stays centred between them and the text; the fixed gaps hold on short screens */
+  html.js .avail { margin-bottom: clamp(10px, 2.4svh, 24px); }
+  html.js .mark-slot { flex: 1 1 0; min-height: 80px; max-height: min(340px, calc(100vw - 2 * var(--pad-x))); max-width: 100%; aspect-ratio: 1; width: auto; height: auto; margin: auto; align-self: center; }
+  html.js .socials { margin-top: 0; padding-top: clamp(10px, 2.4svh, 24px); }
+  /* icons spread across the column with 48 px thumb targets; the row bleeds by half the target padding so
+     the first and last glyphs line up with the text and the button edges */
+  html.js .socials { justify-content: space-between; gap: 0; margin-inline: -12px; }
+  html.js .socials a, html.js .socials .cv-soon { width: 48px; height: 48px; align-items: center; justify-content: center; }
+  html.js .socials .cv-soon, html.js .socials a.cv { width: auto; padding: 0 12px; }
+  html.js .socials svg, html.js .socials .cv-soon svg { width: 24px; height: 24px; }
+  html.js .socials a:hover { transform: none; }
+  html.js.chat-open .sidebar { transform: translateY(-18%); opacity: 0; }
+  /* the screen's one primary action: filled — amber on dark, inverse ink on light (DESIGN.md button-primary) */
+  html.js .chat-enter {
+    display: flex; align-items: center; justify-content: center; gap: 8px; align-self: stretch;
+    margin-top: 22px;
+    padding: 15px 22px;
+    font: inherit; font-size: var(--step-0); font-weight: 500; color: #0c0c0b;
+    background: var(--accent); border: 0; border-radius: 999px;
+    cursor: pointer; transition: opacity .2s, filter .15s;
+  }
+  html[data-theme="light"].js .chat-enter { background: #26211c; color: #faf4ed; }
+  html.js .chat-enter:hover { filter: brightness(1.08); }
+  html.js .chat-enter svg { width: 17px; height: 17px; }
+  html.js.chat-open .chat-enter { opacity: 0; pointer-events: none; }
+  html.js .chat-back {
+    display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; flex: none;
+    min-height: 40px; margin: 0 0 8px; padding: 0 4px 0 0;
+    font: inherit; font-size: var(--step--1); color: var(--muted);
+    background: transparent; border: 0; cursor: pointer;
+  }
+  html.js .chat-back svg { width: 17px; height: 17px; }
+}
+@media (max-width: 1023px) and (prefers-reduced-motion: reduce) {
+  html.js .chat, html.js.chat-open .chat, html.js .sidebar { transition: none; }
+}
+
+.chat-composer {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 2px 10px;
+  border: 1px solid var(--rule); border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  padding: 6px 6px 6px 18px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.chat-composer:hover { border-color: var(--accent); }
+.chat-composer input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent;
+  font: inherit; font-size: var(--chat-fs); color: var(--text);
+  caret-color: transparent; cursor: pointer; user-select: none;
+}
+.chat-composer button {
+  flex: none; width: 38px; height: 38px; border-radius: 50%; border: 0;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--accent); color: #0c0c0b;
+  transition: filter .15s, opacity .15s;
+}
+.chat-composer button svg { width: 18px; height: 18px; margin-left: 2px; }
+.chat-composer button:hover { filter: brightness(1.06); }
+.chat-composer.is-busy { opacity: .55; pointer-events: none; }
+html[data-theme="light"] .chat-composer { background: #fffdf8; border-color: #e2d6c6; }
+html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92); color: #2a2420; box-shadow: inset 0 0 0 1px oklch(80% 0.13 90); }
+[hidden] { display: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chat .fade, .msg-body .w { animation: none; }
 }
 </style>
 <script>
@@ -721,8 +990,8 @@ html.glass-intro-active .mark-placeholder { visibility: hidden; }
     <div class="sidebar-top">
       <h1 class="name">Daniil Makeev<span class="dot" aria-hidden="true"></span></h1>
       <p class="role">Senior AI Engineer · LLM Engineer</p>
-      <p class="tagline">I build and ship AI agents and RAG systems end to end.</p>
-      <div class="avail"><span class="avail-dot"></span>Open to full-time or contract · remote / relocation</div>
+      <p class="tagline"><span class="spin-full">I build and ship AI agents and RAG systems end to end.</span><span class="spin" aria-hidden="true"><span class="spin-mark"><svg class="spin-blob" viewBox="0 0 100 100"><path d=""/></svg></span><span class="spin-word">Shipping agents…</span></span></p>
+      <div class="avail">Open to full-time or contract · remote · relocation</div>
       <div class="mark-slot">
         <!-- The original mark is present before CSS assets, JavaScript or a GPU. -->
         <svg class="mark-placeholder" viewBox="0 0 1024 1024" fill="currentColor" aria-hidden="true" focusable="false"><path d="M285.494 22.7611C-28.0848 308.139 -74.819 1122.92 597.791 1014.64C1179.4 921.01 931.114 -21.6078 734.703 110.991C694.316 138.256 759.4 200.303 781.372 241.392C801.09 278.265 836.829 397.324 809.642 572.652C780.415 761.135 636.523 910.65 599.729 901.347C475.32 852.666 503.703 613.867 502.571 563.216C497.981 357.725 605.093 101.343 575.523 95.5879C527.039 86.1512 314.197 355.067 298.191 73.3788C297.14 54.8845 302.885 6.93411 285.494 22.7611Z"/></svg>
@@ -731,6 +1000,7 @@ html.glass-intro-active .mark-placeholder { visibility: hidden; }
       <nav class="nav" aria-label="Section navigation">
         <ul>
           <li><a href="#about" class="active"><span class="nav-line" aria-hidden="true"></span>About</a></li>
+          <li><a href="#experience"><span class="nav-line" aria-hidden="true"></span>Experience</a></li>
           <li><a href="#projects"><span class="nav-line" aria-hidden="true"></span>Projects</a></li>
           <li><a href="#skills"><span class="nav-line" aria-hidden="true"></span>Skills</a></li>
         </ul>
@@ -742,12 +1012,72 @@ html.glass-intro-active .mark-placeholder { visibility: hidden; }
       <a href="https://www.linkedin.com/in/daniil-makeev/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="3"></rect><line x1="8" y1="11" x2="8" y2="16"></line><line x1="8" y1="8" x2="8" y2="8.5"></line><path d="M12 16v-5M16 16v-3a2 2 0 0 0-4 0"></path></svg></a>
       <a href="https://t.me/wyddy7" target="_blank" rel="noopener" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 4.5 2.5 11.5l7 2m12-9L14 19.5l-4.5-6m0 0 8.5-9"></path></svg></a>
       <a href="https://x.com/wyddy7" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      <a class="cv" href="./makeev-daniil-cv-en.pdf" target="_blank" rel="noopener" aria-label="CV (PDF, opens in a new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 11v6m-3-3 3 3 3-3"/></svg>CV</a>
       <a href="mailto:wyddy.work@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m2 7 10 7 10-7"></path></svg></a>
     </div>
+    <button class="chat-enter" id="chatEnter" type="button" aria-controls="chat">About me<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
   </header>
 
-  <!-- ── RIGHT: scrolling content ── -->
-  <main class="content">
+  <!-- ── RIGHT: chat showcase. Without JS the .legacy column below is shown. ── -->
+  <section class="chat" id="chat" aria-label="Ask about Daniil">
+    <button class="chat-back" id="chatBack" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>Back to main</button>
+    <button class="chat-pin" id="chatPin" type="button" hidden aria-label="Pinned message: experience. Open it in the chat">
+      <span class="pin-rule" aria-hidden="true"></span>
+      <span class="pin-body">
+        <span class="pin-title">Pinned · Experience</span>
+        <span class="pin-text">Senior Applied AI Engineer at hao.vc, a Product AI lab, since Jan 2025 — 6× faster, −60% cost on the video pipeline</span>
+      </span>
+      <svg class="pin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4h6l-1 6 3 3H7l3-3z"/><path d="M12 13v7"/></svg>
+    </button>
+    <div class="chat-log" id="chatLog" aria-live="polite">
+      <section class="cv-view" id="cvView" aria-label="Experience">
+        <p class="cv-lead"><strong>Senior AI / LLM engineer</strong> · 5 years in software</p>
+        <p class="cv-meta">Yerevan, Armenia (UTC+4) · available immediately · remote contract (B2B) or relocation · EAEU work authorization · English B2</p>
+        <p class="cv-summary">Production LLM systems: agents, RAG, evals and the resilience layer around non-deterministic AI providers. Led a video generation pipeline to <strong>6× faster output at 60% lower cost</strong>.</p>
+        <div class="cv-role"><div class="cv-when"><span class="cv-co">hao.vc</span>Jan 2025 – present</div><div>
+          <p class="cv-title"><strong>Senior Applied AI Engineer / Tech Lead</strong></p>
+          <p class="cv-desc">Product AI lab running several products in parallel.</p>
+          <ul class="cv-list">
+            <li><b class="cv-k">Architected the end-to-end multimodal video pipeline</b> and owned AI provider selection (OpenAI, ElevenLabs, Google Imagen) and the monthly provider API budget: latency <strong>6×</strong> (~60 → ~10 min), cost <strong>−60%</strong> ($2.00 → $0.80 per video), <strong>800K+</strong> organic views.</li>
+            <li><b class="cv-k">Built the resilience layer</b> around non-deterministic providers: retries with backoff, fallback routing, media validation and auto-repair of malformed structured outputs with Pydantic v2; 200+ automated tests.</li>
+            <li><b class="cv-k">Owned the AI video-generation pipeline end-to-end</b>, driving the engineering side of a ~6-person cross-functional product team (AI, infrastructure, content, growth).</li>
+            <li><b class="cv-k">Delivered a B2B EdTech project</b> through the lab: an interview-scheduling Telegram Mini App on FastAPI and PostgreSQL with CI/CD, used by ~700 students.</li>
+            <li><b class="cv-k">Own open-source R&amp;D</b> (Browd, NetWho) — agentic patterns and architecture I carried into the production pipeline; production code stays under NDA.</li>
+          </ul>
+        </div></div>
+        <div class="cv-role"><div class="cv-when"><span class="cv-co">Zenit-Electro</span>Jun 2023 – Dec 2024</div><div>
+          <p class="cv-title"><strong>Backend / Applied AI Engineer</strong></p>
+          <p class="cv-desc">Metrological equipment supply and engineering.</p>
+          <ul class="cv-list">
+            <li><b class="cv-k">Python / SQL ETL pipelines</b> for catalog automation and data validation, saving ~8–12 manual hours a week.</li>
+            <li>Designed and built a prototype of a <b class="cv-k">local LLM assistant</b> for internal search across the product catalog and measurement documentation (RAG, structured outputs).</li>
+          </ul>
+        </div></div>
+        <div class="cv-role"><div class="cv-when"><span class="cv-co">EPAM Systems</span>Oct 2021 – Jun 2023</div><div>
+          <p class="cv-title"><strong>Software Engineer (Backend)</strong></p>
+          <p class="cv-desc">Intern / Junior Python Engineer → Middle Backend Engineer. Enterprise e-commerce and fintech, distributed teams of 10–15.</p>
+          <ul class="cv-list">
+            <li><b class="cv-k">High-concurrency REST microservices</b> on FastAPI, PostgreSQL and asyncio.</li>
+            <li><b class="cv-k">Async data processing and integrations:</b> fiscalization services, retries, transaction cancellation.</li>
+            <li><b class="cv-k">Classical NLP</b> (spaCy, transformers / BERT) for entity extraction in enterprise documents.</li>
+          </ul>
+        </div></div>
+        <div class="cv-role"><div class="cv-when"><span class="cv-co">BMSTU</span>Education</div><div>
+          <p class="cv-title"><strong>BSc Computer Engineering / Computer Systems</strong></p>
+        </div></div>
+      </section>
+    </div>
+    <div class="chat-foot">
+      <form class="chat-composer" id="chatComposer" hidden>
+        <input id="chatInput" type="text" autocomplete="off" placeholder="Ask about Daniil…" aria-label="Ask about Daniil" disabled>
+        <button type="submit" aria-label="Send" disabled><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 13V3M8 3L3.5 7.5M8 3l4.5 4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </form>
+      <div class="chat-chips" id="chatChips" role="group" aria-label="Questions"></div>
+    </div>
+  </section>
+
+  <!-- ── RIGHT (no-JS fallback): original scrolling content ── -->
+  <main class="content legacy">
 
     <!-- About -->
     <section class="section" id="about">
@@ -756,7 +1086,7 @@ html.glass-intro-active .mark-placeholder { visibility: hidden; }
         I'm an AI / LLM engineer based in Yerevan, Armenia, with five years in software engineering — open to remote or relocation across EU/US timezones.
       </p>
       <p class="prose">
-        I've been at <a href="https://hao.vc" target="_blank" rel="noopener">Hao</a>, working across production delivery and applied R&amp;D, where I led a <a href="./case-video-pipeline.html">video pipeline</a> to <strong>6× faster output at 60% lower cost</strong>. Below are selected systems I've built and maintained across production delivery, applied R&amp;D and open-source engineering — an open-source <a href="./case-browd.html">browser agent</a>, a multi-tenant contact RAG, a personalized news digest. Before Hao: backend and applied-AI engineering at EPAM and Zenit-Electro.
+        I've been at <a href="https://hao.vc" target="_blank" rel="noopener">hao.vc</a>, a Product AI lab, working across production delivery and applied R&amp;D, where I led a <a href="./case-video-pipeline.html">video pipeline</a> to <strong>6× faster output at 60% lower cost</strong>. Below are selected systems I've built and maintained across production delivery, applied R&amp;D and open-source engineering — an open-source <a href="./case-browd.html">browser agent</a>, a multi-tenant contact RAG, a personalized news digest. Before hao.vc: backend and applied-AI engineering at EPAM and Zenit-Electro.
       </p>
     </section>
 
@@ -851,7 +1181,7 @@ html.glass-intro-active .mark-placeholder { visibility: hidden; }
         <div class="skill-row"><span class="skill-cat">AI / ML</span><span class="skill-list">RAG · Vector search · Reranking · Grounded generation · Structured outputs · LLM deduplication</span></div>
         <div class="skill-row"><span class="skill-cat">Frameworks</span><span class="skill-list">FastAPI · LangGraph · PydanticAI · aiogram · python-telegram-bot · deepagents</span></div>
         <div class="skill-row"><span class="skill-cat">Data</span><span class="skill-list">PostgreSQL · Supabase · pgvector · Pydantic v2 · AsyncIO · httpx</span></div>
-        <div class="skill-row"><span class="skill-cat">Platforms</span><span class="skill-list">OpenRouter · OpenAI · ElevenLabs · Jina AI · Backblaze S3</span></div>
+        <div class="skill-row"><span class="skill-cat">Platforms</span><span class="skill-list">OpenRouter · OpenAI · ElevenLabs · Jina AI · S3 (boto3)</span></div>
         <div class="skill-row"><span class="skill-cat">DevOps</span><span class="skill-list">Docker · docker-compose · GitHub Actions · uv · Linux</span></div>
         <div class="skill-row"><span class="skill-cat">Languages</span><span class="skill-list">Python · SQL · TypeScript · English B2 · Russian native</span></div>
       </div>
@@ -897,6 +1227,399 @@ html.glass-intro-active .mark-placeholder { visibility: hidden; }
   }
 })();
 
+</script>
+
+<script>
+/* Chat showcase. Scripted replay of real site content — no model, no network. */
+(function () {
+  var root = document.documentElement;
+  var chat = document.getElementById('chat');
+  if (!chat) return;
+  var log = document.getElementById('chatLog');
+  var chipsBox = document.getElementById('chatChips');
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var IC_DL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>';
+  var IC_TG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 4.5 2.5 11.5l7 2m12-9L14 19.5l-4.5-6m0 0 8.5-9"></path></svg>';
+  function btn(href, icon, label) { return '<a class="entry-btn" href="' + href + '" target="_blank" rel="noopener">' + icon + label + '</a>'; }
+  function lnk(href, label, ext) { return '<a class="entry-link" href="' + href + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + '>' + label + '</a>'; }
+  function video(src, poster, portrait, label) {
+    return '<span class="msg-media' + (portrait ? ' msg-media--portrait' : '') + '" role="img" aria-label="' + label + '">' +
+      '<video src="' + src + '"' + (poster ? ' poster="' + poster + '"' : '') + ' autoplay loop muted playsinline preload="metadata" disablepictureinpicture tabindex="-1" aria-hidden="true"></video></span>';
+  }
+  var DIGEST_CARD = document.querySelector('.legacy .mock-digest');
+
+  /* Four chips, no nested branches: every answer is complete on its own. */
+  var MSG = {
+    who: {
+      text: ['<strong>Senior AI / LLM engineer</strong>, 5 years in software.',
+             'At <a href="https://hao.vc" target="_blank" rel="noopener">hao.vc</a>, a Product AI lab, I led a video pipeline to <strong>6× faster output at 60% lower cost</strong>. Production systems stay under NDA; the open-source repos on my GitHub are my R&amp;D that informed them.'],
+      meta: 'Yerevan · available immediately · remote contract or relocation' },
+    hao: {
+      media: video('./assets/reelsgen-1.mp4', '', true, 'A generated video'),
+      text: ['<strong>Video generation at hao.vc</strong> — topic to published video: script, voice, images, compose, upload. Production code is under NDA; this is the output.', '<strong>6× faster</strong> (~60 → ~10 min) · <strong>−60% cost</strong> ($2.00 → $0.80 per video) · <strong>800K+</strong> organic views'] },
+    browd: {
+      media: video('./assets/browd-demo.mp4', './assets/browd-card-poster.jpg', false, 'Browd running a task inside the browser'),
+      text: ['<strong>Browd</strong> — a browser agent in the Chrome side panel: LangGraph.js plan-and-execute, human approval before risky actions, its own isolated tab.', '<strong>218 tests</strong> · <strong>6 failure classes</strong> · <strong>52–89%</strong> prompt-cache hit rate, measured'],
+      meta: 'Open-source R&D · live on the Chrome Web Store',
+      links: [btn('https://chromewebstore.google.com/detail/browd-ai-browser-agent/kgjeibjpgopjomghegdpelbnjgmddobb', IC_DL, 'Install'), lnk('https://github.com/wyddy7/browd', 'GitHub', true)] },
+    netwho: {
+      media: video('./assets/netwho-demo.mp4', '', true, 'NetWho answering in Telegram'),
+      text: ['<strong>NetWho</strong> — contact RAG in Telegram: pgvector embeddings plus keyword match, answers grounded in source records, isolation per tenant.'],
+      meta: 'Open-source R&D · live on Telegram, ask it yourself',
+      links: [btn('https://t.me/netwho_bot', IC_TG, 'Try on Telegram'), lnk('https://github.com/wyddy7/netwho', 'GitHub', true)] },
+    digest: {
+      card: DIGEST_CARD,
+      text: ['<strong>Digest</strong> — a deterministic pipeline writes the daily digest; a separate stateful chat agent (DeepAgents, LangGraph) answers follow-ups with compacted memory.'],
+      meta: 'Live · running daily',
+      links: [lnk('https://github.com/wyddy7/claude-digest', 'GitHub', true)] },
+    experience: {
+      text: ['<strong>Senior Applied AI Engineer / Tech Lead</strong> · hao.vc<br><span class="msg-when">Jan 2025 – present · Product AI lab running several products in parallel</span><br>Video pipeline 6× faster, −60% cost, 800K+ views; resilience layer with 200+ tests; drove the engineering side of a ~6-person cross-functional product team; B2B EdTech Mini App for ~700 students.',
+             '<strong>Backend / Applied AI Engineer</strong> · Zenit-Electro<br><span class="msg-when">Jun 2023 – Dec 2024 · metrological equipment</span><br>ETL and catalog automation saving ~8–12 hours a week; a prototype local LLM assistant for internal search.',
+             '<strong>Software Engineer (Backend)</strong> · EPAM Systems<br><span class="msg-when">Oct 2021 – Jun 2023 · Intern → Middle</span><br>High-concurrency FastAPI microservices for e-commerce and fintech; async integrations and fiscalization; classical NLP.',
+             '<strong>BSc Computer Engineering</strong> · Bauman Moscow State Technical University'] },
+    reel2: {
+      media: video('./assets/reelsgen-2.mp4', '', true, 'Another generated video'),
+      text: ['Another one from the hao.vc pipeline — script, voice, images and edit, all generated.'] },
+    reel3: {
+      media: video('./assets/reelsgen-3.mp4', '', true, 'Another generated video'),
+      text: ['And one more — same pipeline, different topic, no manual edit.'] },
+    stack: {
+      text: ['Python every day — FastAPI, asyncio, Pydantic v2, PostgreSQL / pgvector. TypeScript for the browser agent. LangGraph, LangGraph.js, DeepAgents; models through OpenRouter (Claude, Gemini, DeepSeek).',
+             'Evals: an LLM-as-a-judge regression harness and <strong>218 automated tests</strong> on the browser agent. Failures are typed into 6 classes — only transient ones retry, the rest stop or ask a human.'] },
+    logistics: {
+      text: ['Yerevan, Armenia (UTC+4). Available immediately. Remote contract (B2B) across EU and US time zones, or relocation. EAEU work authorization. English B2.'] },
+    contact: {
+      text: ['For hiring, LinkedIn or email. Telegram if you want a fast reply.'],
+      links: [btn('https://www.linkedin.com/in/daniil-makeev/', '', 'LinkedIn'), lnk('mailto:wyddy.work@gmail.com', 'Email'), lnk('https://t.me/wyddy7', 'Telegram', true), lnk('https://github.com/wyddy7', 'GitHub', true), lnk('https://x.com/wyddy7', 'X', true)] }
+  };
+  // The script: every step is a question the visitor sends and one message in reply.
+  var STEPS = [
+    { q: 'Projects?', msg: 'hao', topic: 'projects' },
+    { q: 'Another project? (2/4)', msg: 'browd', topic: 'projects' },
+    { q: 'Another project? (3/4)', msg: 'netwho', topic: 'projects' },
+    { q: 'Another project? (4/4)', msg: 'digest', topic: 'projects' },
+    { q: 'Experience?', msg: 'experience', topic: 'experience' },
+    { q: 'Stack & Evals?', msg: 'stack', topic: 'stack' },
+    { q: 'Logistics?', msg: 'logistics', topic: 'logistics' },
+    { q: 'Contact?', msg: 'contact', topic: 'contact' }
+  ];
+  // After the script: never a dead end. A variable reward (another generated video), then start over.
+  var BONUS = [{ q: 'Another video?', msg: 'reel2' }, { q: 'Another video?', msg: 'reel3' }];
+  var TOPICS = { projects: 'projects', experience: 'experience', stack: 'skills', logistics: 'about', contact: null };
+
+  function el(tag, cls, html) { var n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, reduced ? Math.min(ms, 60) : ms); }); }
+  function clock() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  function stamp() { return el('span', 'msg-time', clock()); }
+  // Put the node at the top of the log viewport; measured from rects so it does not depend on offsetParent.
+  // Own easing instead of scroll-behavior:smooth — native smooth scroll gets cancelled when a video's
+  // metadata arrives and the layout shifts. The target is re-measured every frame, so late layout still lands.
+  var scrollJob = 0;
+  function scrollToNode(node) {
+    // Progress counts frames (~0.4 s at 60 Hz), so a frozen or throttled clock cannot stall it.
+    var job = ++scrollJob, from = log.scrollTop, frames = reduced ? 1 : 24, i = 0;
+    function target() { return Math.max(0, Math.min(log.scrollHeight - log.clientHeight, log.scrollTop + node.getBoundingClientRect().top - log.getBoundingClientRect().top - 8)); }
+    (function frame() {
+      if (job !== scrollJob) return;
+      i++;
+      var p = Math.min(1, i / frames), e = 1 - Math.pow(1 - p, 3);
+      log.scrollTop = from + (target() - from) * e;
+      if (p < 1) requestAnimationFrame(frame);
+    })();
+    setTimeout(function () { if (job === scrollJob) log.scrollTop = target(); }, reduced ? 0 : 600);
+  }
+
+  // Words fade in one after another inside plain text nodes; markup is kept.
+  function wordFade(container) {
+    var i = 0, nodes = [], walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (t) {
+      var frag = document.createDocumentFragment();
+      t.nodeValue.split(/(\s+)/).forEach(function (tok) {
+        if (!tok) return;
+        if (/^\s+$/.test(tok)) { frag.appendChild(document.createTextNode(tok)); return; }
+        var s = el('span', 'w'); s.textContent = tok; s.style.animationDelay = Math.min(i * 14, 700) + 'ms'; i++; frag.appendChild(s);
+      });
+      t.parentNode.replaceChild(frag, t);
+    });
+  }
+  function skillsBox() {
+    var box = el('div', 'msg-skills');
+    document.querySelectorAll('.legacy .skill-row').forEach(function (r) { box.appendChild(r.cloneNode(true)); });
+    return box;
+  }
+
+  async function addQuestion(text, speed) {
+    var b = el('div', 'chat-bubble chat-bubble--q fade');
+    var t = el('span', 'q-text'); b.appendChild(t); log.appendChild(b); scrollToNode(b);
+    if (speed && !reduced) {
+      var caret = el('span', 'caret'); b.appendChild(caret);
+      for (var i = 1; i <= text.length; i++) { t.textContent = text.slice(0, i); await sleep(speed); }
+      caret.remove(); await sleep(200);
+    } else { t.textContent = text; }
+    b.appendChild(stamp());
+    return b;
+  }
+  function addAnswer(item, animate) {
+    var b = el('div', 'chat-bubble chat-bubble--a' + (animate ? ' fade' : ''));
+    if (item.media) b.insertAdjacentHTML('beforeend', item.media);
+    if (item.card) { var c = el('div', 'msg-media msg-media--card'); c.appendChild(item.card.cloneNode(true)); b.appendChild(c); }
+    var body = el('div', 'msg-body');
+    (item.text || []).forEach(function (p) { body.appendChild(el('p', '', p)); });
+    if (item.skills) body.appendChild(skillsBox());
+    if (item.meta) body.appendChild(el('p', 'msg-meta', item.meta));
+    if (animate && !reduced) wordFade(body);
+    if (item.links) body.appendChild(el('div', 'msg-links', item.links.join('')));
+    body.appendChild(stamp());
+    b.appendChild(body);
+    log.appendChild(b);
+    b.querySelectorAll('video').forEach(function (v) { v.addEventListener('loadedmetadata', function () { if (lastQ && !userScrolled) scrollToNode(lastQ); }, { once: true }); });
+    return b;
+  }
+
+  var busy = false, pending = null, chips = {}, sent = [], nextIdx = 0;
+  var form = document.getElementById('chatComposer'), input = document.getElementById('chatInput'), sendBtn = form.querySelector('button');
+  form.hidden = false;
+  input.readOnly = true; input.disabled = false; input.setAttribute('aria-readonly', 'true');
+  sendBtn.disabled = false; sendBtn.setAttribute('aria-label', 'Send this question');
+  sendBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.4 20.4 21.9 12.5a.55.55 0 0 0 0-1L3.4 3.6a.55.55 0 0 0-.76.63L4.6 11 13 12 4.6 13l-1.96 6.77a.55.55 0 0 0 .76.63z"/></svg>';
+  form.addEventListener('submit', function (e) {
+    e.preventDefault(); if (busy) return;
+    if (nextIdx >= 0) sendStep(nextIdx); else if (bonusPos < BONUS.length) sendBonus(); else restart();
+  });
+  input.addEventListener('click', function () { form.requestSubmit ? form.requestSubmit() : sendBtn.click(); });
+  // Chip per topic: jumps to that topic's first question.
+  Object.keys(TOPICS).forEach(function (t) {
+    var first = STEPS.findIndex(function (st) { return st.topic === t; });
+    var c = el('button', 'chat-chip'); c.type = 'button'; c.textContent = STEPS[first].q;
+    c.addEventListener('click', function () { request(first); });
+    chips[t] = c; chipsBox.appendChild(c);
+  });
+  function markNav(t) {
+    var nav = TOPICS[t]; if (!nav) return;
+    document.querySelectorAll('.nav a').forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + nav); });
+  }
+  var restartChip = el('button', 'chat-chip chat-chip--restart'); restartChip.type = 'button'; restartChip.textContent = 'Start over?'; restartChip.hidden = true;
+  restartChip.addEventListener('click', function () { if (!busy) restart(); });
+  chipsBox.appendChild(restartChip);
+  // The chip row wraps to more lines once Experience and Start over join it, and the log (flex: 1) would
+  // shrink under the reader. Reserve the height of the fullest row up front; re-measure when the width changes.
+  function reserveChips() {
+    var hidden = [].filter.call(chipsBox.children, function (c) { return c.hidden; });
+    hidden.forEach(function (c) { c.hidden = false; });
+    chipsBox.style.minHeight = '';
+    chipsBox.style.minHeight = chipsBox.getBoundingClientRect().height + 'px';
+    hidden.forEach(function (c) { c.hidden = true; });
+  }
+  var chipsWidth = 0;
+  new ResizeObserver(function (entries) {
+    var w = entries[0].contentRect.width;
+    if (w !== chipsWidth) { chipsWidth = w; reserveChips(); }
+  }).observe(chipsBox);
+  if (document.fonts) document.fonts.ready.then(reserveChips);   // chip widths change once the web font lands
+  var bonusPos = 0;
+  function findNext(after) {
+    for (var i = after + 1; i < STEPS.length; i++) if (!sent[i]) return i;
+    for (var j = 0; j < STEPS.length; j++) if (!sent[j]) return j;
+    return -1;
+  }
+  // What the composer offers next: the script, then the bonus videos, then a restart — the loop never closes.
+  // A follow-up project question read after another topic has lost its context: say we are going back.
+  var lastTopic = null;
+  function labelFor(i) {
+    var st = STEPS[i];
+    if (st.topic === 'projects' && lastTopic !== 'projects' && st.q.indexOf('Another project?') === 0) return st.q.replace('Another project?', 'Back to projects?');
+    return st.q;
+  }
+  function nextLabel() {
+    if (nextIdx >= 0) return labelFor(nextIdx);
+    return bonusPos < BONUS.length ? BONUS[bonusPos].q : 'Start over?';
+  }
+  function syncComposer() {
+    input.value = nextLabel();
+    // Start over is available from any point once the visitor has asked anything — no dead end mid-chat either.
+    restartChip.hidden = mode !== 'chat';
+    if (chips.experience) chips.experience.hidden = mode === 'cv';   // the CV view already shows it
+    // The chip that would send exactly what the composer already offers is dimmed — it is the same action twice.
+    Object.keys(chips).forEach(function (t) {
+      chips[t].classList.toggle('is-dup', nextIdx >= 0 && STEPS.findIndex(function (st) { return st.topic === t; }) === nextIdx);
+    });
+    form.classList.toggle('is-busy', busy);
+  }
+  async function sendBonus() {
+    busy = true; userScrolled = false; syncComposer();
+    var bn = BONUS[bonusPos];
+    var q = await addQuestion(bn.q, 0);
+    lastTopic = 'bonus';
+    var think = el('div', 'chat-status fade', '<span class="chat-spinner"></span><span>Thinking…</span>');
+    log.appendChild(think); scrollToNode(q);
+    await sleep(700); think.remove();
+    addAnswer(MSG[bn.msg], true); lastQ = q; if (!userScrolled) scrollToNode(q);
+    bonusPos++;
+    busy = false; syncComposer();
+  }
+  // Letters come out of a blur one after another (idea from a React "blurred stagger" component, rebuilt in
+  // plain CSS/JS — the site has no build step). The stagger is scaled so any message resolves in about a second.
+  function blurIn(container) {
+    var nodes = [], walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    var total = nodes.reduce(function (n, t) { return n + t.nodeValue.length; }, 0), i = 0;
+    var byWord = total > 700;   // thousands of per-letter blurred spans would stutter; long text resolves word by word
+    var step = Math.min(15, (byWord ? 1400 : 1000) / Math.max(1, total));
+    nodes.forEach(function (t) {
+      var frag = document.createDocumentFragment();
+      t.nodeValue.split(/(\s+)/).forEach(function (word) {
+        if (!word) return;
+        if (/^\s+$/.test(word)) { frag.appendChild(document.createTextNode(word)); i += word.length; return; }
+        if (byWord) { var ww = el('span', 'bl'); ww.textContent = word; ww.style.animationDelay = (i * step) + 'ms'; i += word.length; frag.appendChild(ww); return; }
+        var w = el('span', 'bw');   // keeps a word unbreakable while its letters animate
+        word.split('').forEach(function (ch) { var c = el('span', 'bl'); c.textContent = ch; c.style.animationDelay = (i++ * step) + 'ms'; w.appendChild(c); });
+        frag.appendChild(w);
+      });
+      var hold = el('span'); hold.appendChild(frag);   // one inline box per text node: a flex parent keeps its line
+      t.parentNode.replaceChild(hold, t);
+    });
+    // List markers have no text to blur: each one appears together with the first word of its item.
+    container.querySelectorAll('li').forEach(function (li) {
+      var first = li.querySelector('.bl'); if (!first) return;
+      li.classList.add('li-forming');
+      setTimeout(function () { li.classList.remove('li-forming'); }, parseFloat(first.style.animationDelay) || 0);
+    });
+    // Safety net: if the compositor never starts the letter animations, the text must still end up visible.
+    setTimeout(function () { container.querySelectorAll('.bl').forEach(function (c) { c.style.animation = 'none'; }); }, (byWord ? 1400 : 1000) + 320 + 300);
+  }
+  // Start over like a deleted Telegram chat: bubbles dissolve bottom-up, then the first message re-forms.
+  async function restart() {
+    busy = true; syncComposer();
+    await dissolve([].slice.call(log.children).reverse());
+    log.textContent = '';
+    log.scrollTop = 0;
+    sent = []; nextIdx = 0; bonusPos = 0; lastQ = null; lastTopic = null;
+    Object.keys(chips).forEach(function (t) { chips[t].classList.remove('is-used'); });
+    document.querySelectorAll('.nav a').forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#about'); });   // back on the CV view
+    var cv = cvTemplate.cloneNode(true);
+    log.appendChild(cv);
+    mode = 'cv'; pin.hidden = true;
+    if (!reduced) blurIn(cv);
+    busy = false; syncComposer();
+  }
+
+  // A visitor's pick waits for the message in flight instead of being dropped.
+  function request(i) { if (busy) { pending = i; return; } sendStep(i); }
+
+  var lastQ = null;
+  // The view follows each new message unless the visitor scrolled the log themselves to read.
+  var userScrolled = false;
+  log.addEventListener('wheel', function () { userScrolled = true; }, { passive: true });
+  log.addEventListener('touchmove', function () { userScrolled = true; }, { passive: true });
+
+  async function sendStep(i) {
+    busy = true; userScrolled = false; syncComposer();
+    await enterChat();
+    var st = STEPS[i];
+    var q = await addQuestion(labelFor(i), 0);
+    lastTopic = st.topic;
+    var think = el('div', 'chat-status fade', '<span class="chat-spinner"></span><span>Thinking…</span>');
+    log.appendChild(think);
+    if (!userScrolled) scrollToNode(q);
+    await sleep(700);
+    think.remove();
+    addAnswer(MSG[st.msg], true);
+    lastQ = q;
+    if (!userScrolled) scrollToNode(q);
+    sent[i] = true;
+    chips[st.topic].classList.add('is-used');
+    markNav(st.topic);
+    nextIdx = findNext(i);
+    busy = false; syncComposer();
+    if (pending != null) { var p = pending; pending = null; sendStep(p); }
+  }
+
+  document.getElementById('chatPin').addEventListener('click', function () { request(STEPS.findIndex(function (st) { return st.topic === 'experience'; })); });
+
+  // The page opens on a static CV view (plain HTML, readable by crawlers); the first send dissolves it into the chat.
+  var cvTemplate = document.getElementById('cvView').cloneNode(true);
+  var pin = document.getElementById('chatPin');
+  var mode = 'cv';
+  async function dissolve(nodes) {
+    if (reduced) return;
+    nodes.forEach(function (b, k) { b.style.animationDelay = Math.min(k * 60, 900) + 'ms'; b.classList.remove('fade'); b.classList.add('dissolve'); });
+    await sleep(Math.min(nodes.length * 60, 900) + 520);
+  }
+  async function enterChat() {
+    if (mode === 'chat') return;
+    var cv = document.getElementById('cvView');
+    if (cv) { await dissolve([].slice.call(cv.children).reverse()); cv.remove(); }
+    mode = 'chat'; pin.hidden = false;
+  }
+  syncComposer();
+
+  // Phone: the chat is its own screen. Opening pushes a history entry, so the system back gesture closes it
+  // instead of leaving the site; the in-chat "Back to main" button does the same.
+  var phone = matchMedia('(max-width: 1023px)');
+  function setOpen(open) { root.classList.toggle('chat-open', open); }
+  document.getElementById('chatEnter').addEventListener('click', function () {
+    history.pushState({ chat: 1 }, '', '#chat'); setOpen(true);
+  });
+  document.getElementById('chatBack').addEventListener('click', function () {
+    if (history.state && history.state.chat) history.back(); else { history.replaceState(null, '', location.pathname + location.search); setOpen(false); }
+  });
+  window.addEventListener('popstate', function () { setOpen(!!(history.state && history.state.chat)); });
+  if (location.hash === '#chat' && phone.matches) { history.replaceState({ chat: 1 }, '', '#chat'); setOpen(true); }
+
+  document.querySelectorAll('.nav a').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var target = a.getAttribute('href').slice(1);
+      e.preventDefault();
+      if (mode === 'cv' && (target === 'about' || target === 'experience')) { log.scrollTop = 0; document.querySelectorAll('.nav a').forEach(function (x) { x.classList.toggle('active', x === a); }); return; }
+      if (target === 'about') { if (log.firstElementChild) scrollToNode(log.firstElementChild); document.querySelectorAll('.nav a').forEach(function (x) { x.classList.toggle('active', x === a); }); return; }
+      var t = target === 'experience' ? 'experience' : target === 'skills' ? 'stack' : 'projects';
+      request(STEPS.findIndex(function (st) { return st.topic === t; }));
+    });
+  });
+})();
+</script>
+
+<script>
+/* Working line: the blob steps through four drawn sizes and back at 2 frames a second, the extremes held 1 s; the verb switches
+   every 3.6 s with a hard cut. Paused on hover and while the tab is hidden; static under reduced motion. */
+(function () {
+  var box = document.querySelector('.tagline .spin');
+  if (!box) return;
+  var word = box.querySelector('.spin-word');
+  var path = box.querySelector('.spin-blob path');
+  var WORDS = ['Shipping agents…', 'Grounding answers…', 'Writing evals…', 'Tuning retrieval…', 'Routing models…',
+               'Catching failures…', 'Compacting context…', 'Hallucinating…', 'Ruminating…'];
+  // A round-ish ink blob: a circle with soft, uneven lobes; each frame is drawn a little differently.
+  function blob(scale, ph) {
+    var d = '';
+    for (var k = 0; k < 72; k++) {
+      var a = 2 * Math.PI * k / 72;
+      var r = 38 * scale * (1 + 0.1 * Math.sin(5 * a + ph) + 0.06 * Math.sin(3 * a + 2 * ph + 1) + 0.03 * Math.sin(9 * a + 3 * ph));
+      d += (k ? ' L' : 'M') + (50 + r * Math.cos(a)).toFixed(1) + ' ' + (50 + r * Math.sin(a)).toFixed(1);
+    }
+    return d + 'Z';
+  }
+  var FRAMES = [blob(0.56, 3.9), blob(0.72, 0), blob(0.86, 1.3), blob(1, 2.6)];
+  var ORDER = [0, 1, 2, 3, 2, 1];
+  var HOLD = [1000, 500, 500, 1000, 500, 500];   // 2 frames a second; the smallest and largest sizes hold 1 s
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var i = 0, f = 0, paused = false;
+  word.textContent = WORDS[0];
+  path.setAttribute('d', FRAMES[ORDER[0]]);
+  if (reduced) return;
+  box.parentNode.addEventListener('mouseenter', function () { paused = true; });
+  box.parentNode.addEventListener('mouseleave', function () { paused = false; });
+  setTimeout(function tick() {
+    if (!paused && !document.hidden) { f = (f + 1) % ORDER.length; path.setAttribute('d', FRAMES[ORDER[f]]); }
+    setTimeout(tick, HOLD[f]);
+  }, HOLD[0]);
+  setInterval(function () {
+    if (paused || document.hidden) return;
+    i = (i + 1) % WORDS.length; word.textContent = WORDS[i];
+  }, 3600);
+})();
 </script>
 
 <!-- Start after HTML parsing; unrelated images/video must not consume the intro fuse. -->

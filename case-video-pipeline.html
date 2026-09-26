@@ -21,7 +21,7 @@
 
 <link rel="preload" href="assets/fonts/Jost-wght.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-/* Jost (OFL, self-hosted, Latin subset, variable 100–900). Decision 2026-09-07: webfont allowed; see auto-docs DESIGN.md → Typography. */
+/* Jost (OFL, self-hosted, Latin subset, variable 100–900). */
 @font-face { font-family: "Jost"; font-weight: 100 900; font-display: swap; src: url(assets/fonts/Jost-wght.woff2) format("woff2"); }
 @font-face { font-family: "Jost"; font-weight: 100 900; font-style: italic; font-display: swap; src: url(assets/fonts/Jost-Italic-wght.woff2) format("woff2"); }
 </style>
@@ -632,11 +632,11 @@ html[data-theme="light"] .theme-toggle .t-knob { transform: translate(0, -50%); 
   <div class="case-kicker">
     <span>Case Study</span>
     <span class="kicker-dot" aria-hidden="true"></span>
-    <span class="kicker-company">at Hao</span>
+    <span class="kicker-company">at hao.vc</span>
   </div>
   <h1 class="case-title">Video generation pipeline, rebuilt for throughput &amp; cost.</h1>
   <p class="case-lede">
-    Full video generation at Hao — topic to published mp4. Dialogue, TTS, images, FFmpeg compose, S3 upload, composed as a two-stage JSON API, parallelized across every I/O-bound call, deduplicated end-to-end.
+    Full video generation at hao.vc — topic to published mp4. Dialogue, TTS, images, FFmpeg compose, S3 upload, composed as a two-stage JSON API, parallelized across every I/O-bound call, deduplicated end-to-end.
   </p>
 </section>
 
@@ -654,7 +654,7 @@ html[data-theme="light"] .theme-toggle .t-knob { transform: translate(0, -50%); 
   <section class="case-sec">
     <h2><span class="sec-num">01</span>Context</h2>
     <p class="prose">
-      Hao builds AI-autonomous orchestrators. One of them needed a pipeline that turns a topic into a finished vertical video — scripted dialogue, voiced lines, generated images, composed with sprites and karaoke subtitles, uploaded to storage. Every generated unit costs real money across LLM calls, TTS, images, and storage, so latency and cost were the whole point of the rebuild.
+      hao.vc builds AI-autonomous orchestrators. One of them needed a pipeline that turns a topic into a finished vertical video — scripted dialogue, voiced lines, generated images, composed with sprites and karaoke subtitles, uploaded to storage. Every generated unit costs real money across LLM calls, TTS, images, and storage, so latency and cost were the whole point of the rebuild.
     </p>
     <p class="prose">
       When I joined the project, the pipeline was linear — a single-path orchestrator with no batch mode or cost instrumentation, operator-driven between stages. <strong>Each generation took minutes and cost roughly $2.</strong> That's the starting line.
@@ -859,7 +859,7 @@ html[data-theme="light"] .theme-toggle .t-knob { transform: translate(0, -50%); 
       <div class="stack-row">
         <span class="stack-cat">Storage</span>
         <div class="stack-pills">
-          <span class="stack-pill">Backblaze S3</span>
+          <span class="stack-pill">S3 (boto3)</span>
           <span class="stack-pill">boto3</span>
         </div>
       </div>

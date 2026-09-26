@@ -5,20 +5,60 @@
 - **Canonical:** https://wyddy.tech/
 - **Role:** Senior AI Engineer · LLM Engineer
 - **Tagline:** I build and ship AI agents and RAG systems end to end.
-- **Availability:** Open to full-time or contract · remote / relocation
+- **Availability:** Open to full-time or contract · remote · relocation
 
 ## About
 
 I'm an AI / LLM engineer based in Yerevan, Armenia, with five years in software
 engineering — open to remote or relocation across EU/US timezones.
 
-I've been at [Hao](https://hao.vc), working across production delivery and applied
+I've been at [hao.vc](https://hao.vc), a Product AI lab, working across production delivery and applied
 R&D, where I led a [video pipeline](https://wyddy.tech/case-video-pipeline.html)
 to **6× faster output at 60% lower cost**. Below are selected systems I've built
 and maintained across production delivery, applied R&D and open-source
 engineering — an open-source [browser agent](https://wyddy.tech/case-browd.html),
-a multi-tenant contact RAG, a personalized news digest. Before Hao: backend and
+a multi-tenant contact RAG, a personalized news digest. Before hao.vc: backend and
 applied-AI engineering at EPAM and Zenit-Electro.
+
+## Experience
+
+**Senior AI / LLM engineer** · 5 years in software
+Yerevan, Armenia (UTC+4) · available immediately · remote contract (B2B) or relocation · EAEU work authorization · English B2
+
+Production LLM systems: agents, RAG, evals and the resilience layer around
+non-deterministic AI providers. Led a video generation pipeline to **6× faster
+output at 60% lower cost**.
+
+### hao.vc — Senior Applied AI Engineer / Tech Lead · Jan 2025 – present
+
+Product AI lab running several products in parallel.
+
+- **Architected the end-to-end multimodal video pipeline** and owned AI provider selection (OpenAI, ElevenLabs, Google Imagen) and the monthly provider API budget: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 800K+ organic views.
+- **Built the resilience layer** around non-deterministic providers: retries with backoff, fallback routing, media validation and auto-repair of malformed structured outputs with Pydantic v2; 200+ automated tests.
+- **Owned the AI video-generation pipeline end-to-end**, driving the engineering side of a ~6-person cross-functional product team (AI, infrastructure, content, growth).
+- **Delivered a B2B EdTech project** through the lab: an interview-scheduling Telegram Mini App on FastAPI and PostgreSQL with CI/CD, used by ~700 students.
+- **Own open-source R&D** (Browd, NetWho) — agentic patterns and architecture I carried into the production pipeline; production code stays under NDA.
+
+### Zenit-Electro — Backend / Applied AI Engineer · Jun 2023 – Dec 2024
+
+Metrological equipment supply and engineering.
+
+- **Python / SQL ETL pipelines** for catalog automation and data validation, saving ~8–12 manual hours a week.
+- Designed and built a prototype of a **local LLM assistant** for internal search across the product catalog and measurement documentation (RAG, structured outputs).
+
+### EPAM Systems — Software Engineer (Backend) · Oct 2021 – Jun 2023
+
+Intern / Junior Python Engineer → Middle Backend Engineer. Enterprise e-commerce and fintech, distributed teams of 10–15.
+
+- **High-concurrency REST microservices** on FastAPI, PostgreSQL and asyncio.
+- **Async data processing and integrations:** fiscalization services, retries, transaction cancellation.
+- **Classical NLP** (spaCy, transformers / BERT) for entity extraction in enterprise documents.
+
+### BMSTU — Education
+
+BSc Computer Engineering / Computer Systems
+
+Full CV (PDF): https://wyddy.tech/makeev-daniil-cv-en.pdf
 
 ## Projects
 
@@ -64,7 +104,7 @@ answers follow-ups.
 - **AI / ML:** RAG · Vector search · Reranking · Grounded generation · Structured outputs · LLM deduplication
 - **Frameworks:** FastAPI · LangGraph · PydanticAI · aiogram · python-telegram-bot · deepagents
 - **Data:** PostgreSQL · Supabase · pgvector · Pydantic v2 · AsyncIO · httpx
-- **Platforms:** OpenRouter · OpenAI · ElevenLabs · Jina AI · Backblaze S3
+- **Platforms:** OpenRouter · OpenAI · ElevenLabs · Jina AI · S3 (boto3)
 - **DevOps:** Docker · docker-compose · GitHub Actions · uv · Linux
 - **Languages:** Python · SQL · TypeScript · English B2 · Russian native
 
@@ -78,3 +118,4 @@ your team is missing:
 - GitHub: https://github.com/wyddy7
 - LinkedIn: https://www.linkedin.com/in/daniil-makeev/
 - X: https://x.com/wyddy7
+- CV (PDF): https://wyddy.tech/makeev-daniil-cv-en.pdf

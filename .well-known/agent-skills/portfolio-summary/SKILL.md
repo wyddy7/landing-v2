@@ -5,29 +5,22 @@ description: Concise portfolio overview for AI agents that need to understand Da
 
 # Daniil Makeev portfolio summary
 
-Use this skill when you need a short, high-signal summary of Daniil Makeev as a candidate for applied AI engineering work.
+Use this skill when you need a short, high-signal summary of Daniil Makeev as a candidate for Senior AI / LLM engineering roles.
 
 ## Positioning
 
-Daniil Makeev is a Senior AI / LLM engineer (five years in software engineering) focused on production RAG systems, agent systems, internal GenAI pipelines, and workflow automation — across production delivery and applied R&D.
-
-## Core value
-
-- Improves retrieval quality
-- Speeds up production pipelines
-- Reduces generation cost
-- Ships agent-facing tools into production
+Daniil Makeev is a Senior AI / LLM engineer with 5 years in software, currently Senior Applied AI Engineer / Tech Lead at hao.vc, a Product AI lab (Jan 2025 – present). He builds production LLM systems: agents, RAG, evals and the resilience layer around non-deterministic AI providers. Before hao.vc: EPAM Systems and Zenit-Electro.
 
 ## Strongest proof points
 
-- 6x faster video generation after a pipeline rewrite
-- 60% lower generation cost ($2.00 → $0.80 per video)
-- Live multi-tenant Contact RAG shipped on Telegram
-- Live daily digest bot with LangGraph checkpointing
+- Video generation pipeline at hao.vc: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 800K+ organic views
+- Resilience layer around non-deterministic providers with 200+ automated tests
+- Browd, a browser agent live on the Chrome Web Store: 218 tests, 6 failure classes, 52–89% measured prompt-cache hit rate
+- NetWho, a live multi-tenant contact RAG on Telegram
+- Digest, a live daily digest with a separate stateful chat agent (DeepAgents, LangGraph)
 
-## Best-fit work
+## Logistics
 
-- RAG systems
-- Internal AI tooling
-- Retrieval pipelines
-- Operations-heavy generation workflows
+- Yerevan, Armenia (UTC+4); available immediately
+- Remote contract (B2B) across EU and US time zones, or relocation; EAEU work authorization; English B2
+- CV (PDF): https://wyddy.tech/makeev-daniil-cv-en.pdf

@@ -1,44 +1,59 @@
 # Daniil Makeev — Senior AI / LLM Engineer
 
-> Senior AI / LLM engineer (five years in software engineering) building agent systems, RAG pipelines, and content generation stacks across production delivery and applied R&D.
+> Senior AI / LLM engineer, 5 years in software. Production LLM systems: agents, RAG, evals and the resilience layer around non-deterministic AI providers. Led a video generation pipeline to 6× faster output at 60% lower cost.
 
 **Canonical URL**: https://wyddy.tech/
 
 ## Summary
 
-- Focuses on multi-agent architectures, retrieval quality, pipeline speed, and generation cost.
-- Stack: Python, LangGraph, deepagents, Supabase, Docker, OpenRouter.
-- Career: EPAM → Zenit-Electro → Hao (AI lab).
+- Role: Senior Applied AI Engineer / Tech Lead at hao.vc, a Product AI lab (Jan 2025 – present).
+- Career: EPAM Systems → Zenit-Electro → hao.vc.
+- Location: Yerevan, Armenia (UTC+4). Available immediately. Remote contract (B2B) across EU and US time zones, or relocation. EAEU work authorization. English B2.
+- Stack: Python (FastAPI, asyncio, Pydantic v2), PostgreSQL / pgvector, TypeScript; LangGraph, LangGraph.js, DeepAgents; models through OpenRouter (Claude, Gemini, DeepSeek).
+- CV (PDF): https://wyddy.tech/makeev-daniil-cv-en.pdf
+
+## Experience
+
+- **hao.vc** — Senior Applied AI Engineer / Tech Lead · Jan 2025 – present. Product AI lab running several products in parallel. Architected the end-to-end multimodal video pipeline: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 800K+ organic views. Resilience layer around non-deterministic providers with 200+ automated tests. B2B EdTech interview-scheduling Telegram Mini App on FastAPI and PostgreSQL, used by ~700 students.
+- **Zenit-Electro** — Backend / Applied AI Engineer · Jun 2023 – Dec 2024. Python / SQL ETL pipelines saving ~8–12 manual hours a week; prototype of a local LLM assistant for internal search (RAG, structured outputs).
+- **EPAM Systems** — Software Engineer (Backend) · Oct 2021 – Jun 2023. Intern / Junior Python Engineer → Middle Backend Engineer. High-concurrency REST microservices on FastAPI, PostgreSQL and asyncio.
+- **BMSTU** — BSc Computer Engineering / Computer Systems.
 
 ## Selected Work
 
-### Hao — Video Generation Pipeline
+### hao.vc — Video Generation Pipeline
 
-- Rebuilt a full video generation pipeline: topic to published mp4.
-- Dialogue, TTS, images, FFmpeg compose, S3 upload — two-stage JSON API.
-- Results: **6× faster** throughput, **−60%** generation cost.
-- Stack: Python, structured LLM outputs, ElevenLabs, pluggable image providers, FFmpeg, S3 (boto3).
+- Topic to published video: script, voice, images, compose, upload. Production code is under NDA.
+- Results: **6× faster** (~60 → ~10 min), **−60%** cost ($2.00 → $0.80 per video), 800K+ organic views.
+- Stack: Python, Prefect, OpenAI API, ElevenLabs, Google Imagen, FFmpeg, S3 (boto3), Pydantic v2.
+- Case study: https://wyddy.tech/case-video-pipeline.html
 
-### NetWho — AI CRM Assistant (applied R&D)
+### Browd — Browser AI Agent (open-source R&D)
 
-- Telegram-native AI assistant over a personal professional network.
-- RAG with pgvector, Jina AI news enrichment, reranking loop.
-- Live demo with multi-tenant contact RAG, Supabase RLS, pgvector, and reranking.
+- A browser agent in the Chrome side panel: LangGraph.js plan-and-execute, human approval before risky actions, its own isolated tab.
+- 218 tests · 6 failure classes · 52–89% prompt-cache hit rate, measured.
+- Live on the Chrome Web Store: https://chromewebstore.google.com/detail/browd-ai-browser-agent/kgjeibjpgopjomghegdpelbnjgmddobb
+- Source (Apache-2.0): https://github.com/wyddy7/browd
+
+### NetWho — Contact RAG in Telegram (open-source R&D)
+
+- Contact RAG in Telegram: pgvector embeddings plus keyword match, answers grounded in source records, isolation per tenant.
 - Public demo: https://t.me/netwho_bot
-- Stack: pgvector, Supabase, aiogram, OpenRouter, Groq Whisper, Docker.
+- Source: https://github.com/wyddy7/netwho
 
-### Digest Bot — Personalized AI Digest (applied R&D)
+### Digest — Personalized AI Digest
 
-- Live Telegram bot running daily.
-- Two-agent architecture: stateless pipeline + stateful conversational agent with LangGraph checkpointing over Supabase.
-- Stack: deepagents, LangGraph + Supabase checkpointer, OpenRouter, python-telegram-bot.
+- A deterministic pipeline writes the daily digest; a separate stateful chat agent (DeepAgents, LangGraph) answers follow-ups with compacted memory.
+- Live, running daily.
+- Source: https://github.com/wyddy7/claude-digest
 
 ## Contact
 
-- LinkedIn: https://www.linkedin.com/in/daniil-makeev/
-- GitHub: https://github.com/wyddy7
 - Email: wyddy.work@gmail.com
 - Telegram: https://t.me/wyddy7
+- LinkedIn: https://www.linkedin.com/in/daniil-makeev/
+- GitHub: https://github.com/wyddy7
+- CV (PDF): https://wyddy.tech/makeev-daniil-cv-en.pdf
 
 ## Markdown versions
 
@@ -49,7 +64,7 @@ Each HTML page also advertises its twin via `<link rel="alternate" type="text/ma
 - Case · Browd (browser agent): https://wyddy.tech/case-browd.html.md
 - Case · NetWho (contact RAG): https://wyddy.tech/case-netwho.html.md
 - Case · Digest Bot (news digest): https://wyddy.tech/case-digest.html.md
-- Case · Video pipeline (Hao): https://wyddy.tech/case-video-pipeline.html.md
+- Case · Video pipeline (hao.vc): https://wyddy.tech/case-video-pipeline.html.md
 
 ## Agent Resources
 

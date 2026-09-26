@@ -17,7 +17,7 @@ robots.txt / llms.txt / sitemap.xml
 
 Every public page `X.html` ships with a markdown twin `X.html.md`, served by
 GitHub Pages as `Content-Type: text/markdown` so AI agents can read a clean
-version (see `auto-docs/landing-map.md` → "Markdown for agents"). The twins are
+version (see `auto-docs/projects/landing/map.md` → "Markdown for agents"). The twins are
 **hand-authored — nothing regenerates them.**
 
 **So: when you change a page's CONTENT, change its `.html.md` twin in the same
