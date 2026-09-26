@@ -28,14 +28,14 @@
 - Stack: Python, Prefect, OpenAI API, ElevenLabs, Google Imagen, FFmpeg, S3 (boto3), Pydantic v2.
 - Case study: https://wyddy.tech/case-video-pipeline.html
 
-### Browd — Browser AI Agent (open-source R&D)
+### Browd — Browser AI Agent (applied R&D at hao.vc, open source)
 
 - A browser agent in the Chrome side panel: LangGraph.js plan-and-execute, human approval before risky actions, its own isolated tab.
 - 218 tests · 6 failure classes · 52–89% prompt-cache hit rate, measured.
 - Live on the Chrome Web Store: https://chromewebstore.google.com/detail/browd-ai-browser-agent/kgjeibjpgopjomghegdpelbnjgmddobb
 - Source (Apache-2.0): https://github.com/wyddy7/browd
 
-### NetWho — Contact RAG in Telegram (open-source R&D)
+### NetWho — Contact RAG in Telegram (applied R&D at hao.vc, open source)
 
 - Contact RAG in Telegram: pgvector embeddings plus keyword match, answers grounded in source records, isolation per tenant.
 - Public demo: https://t.me/netwho_bot

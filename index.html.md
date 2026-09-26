@@ -37,7 +37,7 @@ Product AI lab running several products in parallel.
 - **Built the resilience layer** around non-deterministic providers: retries with backoff, fallback routing, media validation and auto-repair of malformed structured outputs with Pydantic v2; 200+ automated tests.
 - **Owned the AI video-generation pipeline end-to-end**, driving the engineering side of a ~6-person cross-functional product team (AI, infrastructure, content, growth).
 - **Delivered a B2B EdTech project** through the lab: an interview-scheduling Telegram Mini App on FastAPI and PostgreSQL with CI/CD, used by ~700 students.
-- **Own open-source R&D** (Browd, NetWho) — agentic patterns and architecture I carried into the production pipeline; production code stays under NDA.
+- **Applied R&D at hao.vc, open-sourced** (Browd, NetWho) — agentic patterns and architecture I carried into the production pipeline; production code stays under NDA.
 
 ### Zenit-Electro — Backend / Applied AI Engineer · Jun 2023 – Dec 2024
 

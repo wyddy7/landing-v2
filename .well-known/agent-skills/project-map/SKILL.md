@@ -14,14 +14,14 @@ Use this skill when you need to connect featured outcomes to the underlying engi
 - Main themes: orchestration, provider cost control, resilience around non-deterministic providers
 - Case study: https://wyddy.tech/case-video-pipeline.html
 
-## Browd - Browser AI agent (open-source R&D)
+## Browd - Browser AI agent (applied R&D at hao.vc, open source)
 
 - Outcomes: live on the Chrome Web Store; 218 tests, 6 failure classes, 52–89% measured prompt-cache hit rate
 - Technologies: TypeScript, LangGraph.js plan-and-execute, Chrome MV3, React
 - Main themes: human approval before risky actions, isolated tab, typed failure handling
 - Case study: https://wyddy.tech/case-browd.html
 
-## NetWho - Contact RAG in Telegram (open-source R&D)
+## NetWho - Contact RAG in Telegram (applied R&D at hao.vc, open source)
 
 - Outcomes: live Telegram assistant over personal and organizational networks
 - Technologies: pgvector embeddings plus keyword match, Supabase RLS, aiogram, Pydantic v2, Docker
