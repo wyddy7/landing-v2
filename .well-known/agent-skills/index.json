@@ -21,7 +21,7 @@
       "type": "reference",
       "description": "Maps each featured project to its outcomes, constraints, and the main technologies used.",
       "url": "https://wyddy.tech/.well-known/agent-skills/project-map/SKILL.md",
-      "sha256": "dd20e8f97f65ee056781bb42bb80217b5aa3ec33c85ad6624045536785c36ea9"
+      "sha256": "894bd56267bce03047afa3396746d7e0b471bb6b59f9e1d956a2d61396a41728"
     }
   ]
 }

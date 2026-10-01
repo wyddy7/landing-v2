@@ -70,7 +70,7 @@ plan-and-execute with per-tool state budgets, tab isolation, prompt-injection
 guards on every third-party text source.
 
 - **Status:** Live on the Chrome Web Store · open-source, Apache-2.0
-- **Stack:** TypeScript · LangGraph.js · MV3 service worker · puppeteer-core · React
+- **Stack:** TypeScript · LangGraph.js · LangChain.js · MV3 service worker · puppeteer-core · React
 - Install: https://chromewebstore.google.com/detail/browd-ai-browser-agent/kgjeibjpgopjomghegdpelbnjgmddobb
 - Source: https://github.com/wyddy7/browd
 - Case study: https://wyddy.tech/case-browd.html
@@ -102,7 +102,7 @@ answers follow-ups.
 ## Skills
 
 - **AI / ML:** RAG · Vector search · Reranking · Grounded generation · Structured outputs · LLM deduplication
-- **Frameworks:** FastAPI · LangGraph · PydanticAI · aiogram · python-telegram-bot · deepagents
+- **Frameworks:** FastAPI · LangGraph · LangChain · PydanticAI · aiogram · python-telegram-bot · deepagents
 - **Data:** PostgreSQL · Supabase · pgvector · Pydantic v2 · AsyncIO · httpx
 - **Platforms:** OpenRouter · OpenAI · ElevenLabs · Jina AI · S3 (boto3)
 - **DevOps:** Docker · docker-compose · GitHub Actions · uv · Linux

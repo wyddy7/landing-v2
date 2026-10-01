@@ -9,7 +9,7 @@ Lives in the Chrome side panel: LangGraph.js plan-and-execute, human approval be
 
 Results: **218** tests · **6** failure classes · **52–89%** prompt-cache hit rate, measured
 
-Stack: TypeScript · LangGraph.js · Chrome MV3 · React
+Stack: TypeScript · LangGraph.js · LangChain.js · Chrome MV3 · React
 
 - Install from the Chrome Web Store: https://chromewebstore.google.com/detail/browd-ai-browser-agent/kgjeibjpgopjomghegdpelbnjgmddobb
 - Source on GitHub: https://github.com/wyddy7/browd
