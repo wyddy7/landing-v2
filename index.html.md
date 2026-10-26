@@ -33,7 +33,7 @@ output at 60% lower cost**.
 
 Product AI lab running several products in parallel.
 
-- **Architected the end-to-end multimodal video pipeline** and owned AI provider selection (OpenAI, ElevenLabs, Google Imagen) and the monthly provider API budget: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 800K+ organic views.
+- **Architected the end-to-end multimodal video pipeline** and owned AI provider selection (OpenAI, ElevenLabs, Google Imagen) and the monthly provider API budget: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 350+ videos, 1.8M+ organic views (top — 800K+).
 - **Built the resilience layer** around non-deterministic providers: retries with backoff, fallback routing, media validation and auto-repair of malformed structured outputs with Pydantic v2; 200+ automated tests.
 - **Owned the AI video-generation pipeline end-to-end**, driving the engineering side of a ~6-person cross-functional product team (AI, infrastructure, content, growth).
 - **Delivered a B2B EdTech project** through the lab: an interview-scheduling Telegram Mini App on FastAPI and PostgreSQL with CI/CD, used by ~700 students.

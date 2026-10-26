@@ -13,7 +13,7 @@ Daniil Makeev is a Senior AI / LLM engineer with 5 years in software, currently 
 
 ## Strongest proof points
 
-- Video generation pipeline at hao.vc: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 800K+ organic views
+- Video generation pipeline at hao.vc: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 350+ videos, 1.8M+ organic views (top — 800K+)
 - Resilience layer around non-deterministic providers with 200+ automated tests
 - Browd, a browser agent live on the Chrome Web Store: 218 tests, 6 failure classes, 52–89% measured prompt-cache hit rate
 - NetWho, a live multi-tenant contact RAG on Telegram

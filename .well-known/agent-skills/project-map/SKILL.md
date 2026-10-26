@@ -9,7 +9,7 @@ Use this skill when you need to connect featured outcomes to the underlying engi
 
 ## hao.vc - Video generation pipeline
 
-- Outcomes: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 800K+ organic views
+- Outcomes: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 350+ videos, 1.8M+ organic views (top — 800K+)
 - Technologies: Python, Prefect, OpenAI API, ElevenLabs, Google Imagen, FFmpeg, S3 (boto3), Pydantic v2
 - Main themes: orchestration, provider cost control, resilience around non-deterministic providers
 - Case study: https://wyddy.tech/case-video-pipeline.html

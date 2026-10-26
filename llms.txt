@@ -14,7 +14,7 @@
 
 ## Experience
 
-- **hao.vc** — Senior Applied AI Engineer / Tech Lead · Jan 2025 – present. Product AI lab running several products in parallel. Architected the end-to-end multimodal video pipeline: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 800K+ organic views. Resilience layer around non-deterministic providers with 200+ automated tests. B2B EdTech interview-scheduling Telegram Mini App on FastAPI and PostgreSQL, used by ~700 students.
+- **hao.vc** — Senior Applied AI Engineer / Tech Lead · Jan 2025 – present. Product AI lab running several products in parallel. Architected the end-to-end multimodal video pipeline: latency 6× (~60 → ~10 min), cost −60% ($2.00 → $0.80 per video), 350+ videos, 1.8M+ organic views (top — 800K+). Resilience layer around non-deterministic providers with 200+ automated tests. B2B EdTech interview-scheduling Telegram Mini App on FastAPI and PostgreSQL, used by ~700 students.
 - **Zenit-Electro** — Backend / Applied AI Engineer · Jun 2023 – Dec 2024. Python / SQL ETL pipelines saving ~8–12 manual hours a week; prototype of a local LLM assistant for internal search (RAG, structured outputs).
 - **EPAM Systems** — Software Engineer (Backend) · Oct 2021 – Jun 2023. Intern / Junior Python Engineer → Middle Backend Engineer. High-concurrency REST microservices on FastAPI, PostgreSQL and asyncio.
 - **BMSTU** — BSc Computer Engineering / Computer Systems.
@@ -24,7 +24,7 @@
 ### hao.vc — Video Generation Pipeline
 
 - Topic to published video: script, voice, images, compose, upload. Production code is under NDA.
-- Results: **6× faster** (~60 → ~10 min), **−60%** cost ($2.00 → $0.80 per video), 800K+ organic views.
+- Results: **6× faster** (~60 → ~10 min), **−60%** cost ($2.00 → $0.80 per video), 350+ videos, 1.8M+ organic views (top — 800K+).
 - Stack: Python, Prefect, OpenAI API, ElevenLabs, Google Imagen, FFmpeg, S3 (boto3), Pydantic v2.
 - Case study: https://wyddy.tech/case-video-pipeline.html
 

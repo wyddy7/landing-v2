@@ -7,7 +7,7 @@
 
 Topic to published video: script, voice, images, compose, upload.
 
-Results: **6×** faster (~60 → ~10 min) · **−60%** cost ($2.00 → $0.80 per video) · **800K+** organic views
+Results: **6×** faster (~60 → ~10 min) · **−60%** cost ($2.00 → $0.80 per video) · **350+** videos · **1.8M+** organic views (top — 800K+)
 
 Stack: Python · Prefect · OpenAI API · ElevenLabs · Google Imagen · FFmpeg · S3 (boto3) · Pydantic v2
 
