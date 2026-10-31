@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>/* one theme for the whole site: the landing key, dark unless the visitor chose light */try { document.documentElement.dataset.theme = localStorage.getItem('dm-landing-mode') === 'light' ? 'light' : 'dark'; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
+<title>Articles · Daniil Makeev</title>
+<link rel="alternate" type="text/markdown" href="index.html.md">
+<meta name="description" content="Articles by Daniil Makeev on AI, engineering and the money behind both.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Articles · Daniil Makeev">
+<meta property="og:url" content="https://wyddy.tech/articles/">
+<meta property="og:image" content="https://wyddy.tech/articles/ai-payoff/og.jpg">
+<link rel="preload" href="/assets/fonts/Jost-wght.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face { font-family: "Jost"; font-weight: 100 900; font-display: swap; src: url(/assets/fonts/Jost-wght.woff2) format("woff2"); }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #faf9f5; --text: #141413; --muted: #75736b; --rule: #e8e6dc; --card: #ffffff; --card-border: #e8e6dc; --accent: #d97757;
+  --sans: 'Jost', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --col: 680px; color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1f1e1d; --text: #f0eee6; --muted: #918f86; --rule: #34332f; --card: #262624; --card-border: #3a3935; --accent: #d97757; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1f1e1d; --text: #f0eee6; --muted: #918f86; --rule: #34332f; --card: #262624; --card-border: #3a3935; --accent: #d97757; color-scheme: dark; }
+
+html { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+body { background: var(--bg); font-size: clamp(18px, 1rem + 0.35vw, 20px); line-height: 1.55; }
+html, body, .topbar, #theme, .card { transition: background-color .45s cubic-bezier(.22,1,.36,1), color .45s cubic-bezier(.22,1,.36,1), border-color .45s cubic-bezier(.22,1,.36,1); }
+
+.topbar { border-bottom: 1px solid var(--rule); }
+.topbar-in { max-width: 1200px; margin: 0 auto; padding: 18px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+.topbar a { color: var(--text); text-decoration: none; font-weight: 500; }
+.topbar .crumb { color: var(--muted); }
+#theme { background: none; border: 1px solid var(--rule); color: var(--muted); border-radius: 999px; padding: 4px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+
+main { max-width: calc(var(--col) + 32px); margin: 0 auto; padding: clamp(48px, 8vw, 96px) 16px 96px; }
+h1 { font-size: clamp(38px, 2rem + 3vw, 62px); line-height: 1.04; font-weight: 500; letter-spacing: -0.02em; }
+.lede { margin-top: 16px; color: var(--muted); }
+.list { display: grid; gap: 40px; margin-top: clamp(40px, 6vw, 64px); }
+
+.card { display: block; color: inherit; text-decoration: none; background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; }
+.card-cover { aspect-ratio: 1200 / 630; overflow: hidden; background: #a7a29c; }
+.card-cover img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .9s cubic-bezier(.22,1,.36,1); }
+.card:hover .card-cover img { transform: scale(1.03); }
+.card-body { padding: 22px clamp(20px, 4vw, 32px) 26px; }
+.card h2 { font-size: clamp(24px, 1.2rem + 1vw, 32px); line-height: 1.15; font-weight: 500; letter-spacing: -0.01em; }
+.card p { margin-top: 10px; color: var(--muted); }
+.card .meta { margin-top: 14px; font-size: 14px; color: var(--muted); }
+.card .go { display: inline-block; margin-left: 6px; transition: transform .2s; }
+.card:hover .go { transform: translateX(4px); }
+
+/* Contact is plain text; the theme control is the symbol of the current theme (sun = light, moon = dark). */
+#contact { background: none; color: var(--text); border: 0; border-radius: 0; padding: 4px 2px; font: inherit; font-size: 15px; cursor: pointer;
+  text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 4px; transition: text-decoration-color .2s; }
+#contact:hover, #contact[aria-expanded="true"] { text-decoration-color: currentColor; }
+#theme { width: 34px; height: 34px; padding: 7px; border: 0; border-radius: 999px; background: none; color: var(--text); display: grid; place-items: center; }
+#theme:hover { background: var(--tint, var(--rule)); }
+#theme svg { grid-area: 1 / 1; width: 20px; height: 20px; }
+:root[data-theme="dark"] #theme .i-sun, :root[data-theme="light"] #theme .i-moon { display: none; }
+/* Sticky top bar with a contact menu: the way to reach the author is always one tap away. */
+.topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in oklab, var(--bg) 84%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2); }
+.top-actions { display: flex; gap: 8px; align-items: center; }
+.contact { position: relative; }
+.contact-menu { position: absolute; right: 0; top: calc(100% + 8px); min-width: 170px; display: grid; padding: 6px;
+  background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 14px 36px rgba(0, 0, 0, .14); transform-origin: top right; }
+.contact-menu[hidden] { display: none; }
+.contact-menu a { padding: 8px 12px; border-radius: 8px; color: var(--text); text-decoration: none; font-size: 15px; font-weight: 400; }
+.contact-menu a:hover { background: var(--tint, var(--rule)); }
+@media (max-width: 560px) { .crumb-last { display: none; } }
+
+/* Theme switch: the new theme spreads as a circle from the switch (View Transitions); colours fade where that API is missing. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; } ::view-transition-new(root) { z-index: 2; }
+.vt-swap, .vt-swap * { transition: none !important; }
+
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+  <span><a href="https://wyddy.tech/">Daniil Makeev</a> <span class="crumb">/ Articles</span></span>
+  <div class="top-actions">
+    <div class="contact"><button id="contact" type="button" aria-expanded="false" aria-controls="contact-menu">Contact</button>
+      <div class="contact-menu" id="contact-menu" hidden>
+        <a href="mailto:wyddy.work@gmail.com">Email</a>
+        <a href="https://t.me/wyddy7" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://www.linkedin.com/in/daniil-makeev/" target="_blank" rel="noopener">LinkedIn</a>
+      </div></div>
+    <button id="theme" type="button" aria-label="Switch between light and dark theme"><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg></button>
+  </div>
+</div></header>
+
+<main>
+  <h1>Articles</h1>
+  <p class="lede">Words in sentences (sometimes with meaning).</p>
+  <div class="list">
+    <a class="card" href="/articles/ai-payoff/">
+      <div class="card-cover"><img src="/articles/ai-payoff/og.jpg" alt="A marble Atlas holding up a huge dark boulder, with the words AI and useless?" width="1200" height="630"></div>
+      <div class="card-body">
+        <h2>Has AI made businesses any money?</h2>
+        <p>Apollo’s chief economist says companies outside tech made no money from AI. A flat profit chart can hide $105 million a year per company.</p>
+        <div class="meta">November 2026 · 5 min read<span class="go" aria-hidden="true">→</span></div>
+      </div>
+    </a>
+  </div>
+</main>
+
+<script>
+function themeSwap(el, change) {
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!document.startViewTransition || reduce) { change(); return; }
+  var r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2,
+      R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  // CSS colour transitions would make the new snapshot keep the OLD colours, then the live page fades: a flash.
+  var root = document.documentElement; root.classList.add('vt-swap');
+  var t = document.startViewTransition(change);
+  t.finished.finally(function () { root.classList.remove('vt-swap'); });
+  t.ready.then(function () {
+    document.documentElement.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + R + 'px at ' + x + 'px ' + y + 'px)'] },
+      { duration: 650, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' });
+  });
+}
+</script>
+<script>
+(function () {
+  var root = document.documentElement, btn = document.getElementById('theme');
+  btn.addEventListener('click', function () { themeSwap(btn, function () {
+    var dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('dm-landing-mode', root.dataset.theme); } catch (e) {}
+  }); });
+  // Entrances run top to bottom, one after another (same rule as the article page).
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !Element.prototype.animate) return;
+  var at = 0;
+  document.querySelectorAll('main h1, main .lede, .card').forEach(function (el) {
+    el.animate([{ opacity: 0, transform: 'translateY(16px)', filter: 'blur(6px)' }, { opacity: 1, transform: 'none', filter: 'none' }],
+               { duration: 750, delay: at, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' });
+    at += 120;
+  });
+})();
+
+(function () {
+
+  // the theme symbol turns over when the theme changes
+  var tb = document.getElementById('theme');
+  if (tb && tb.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+    tb.addEventListener('click', function () { tb.animate([{ transform: 'rotate(-90deg) scale(.6)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 420, easing: 'cubic-bezier(.34,1.45,.64,1)' }); });
+  // Contact menu: opens with a short scale-in, closes on outside click or Escape.
+  var btn = document.getElementById('contact'), menu = document.getElementById('contact-menu');
+  if (!btn || !menu) return;
+  function set(open) {
+    btn.setAttribute('aria-expanded', String(open));
+    if (open) {
+      menu.hidden = false;
+      if (menu.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+        menu.animate([{ opacity: 0, transform: 'translateY(-6px) scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.34,1.45,.64,1)' });
+    } else menu.hidden = true;
+  }
+  btn.addEventListener('click', function (e) { e.stopPropagation(); set(menu.hidden); });
+  document.addEventListener('click', function (e) { if (!menu.hidden && !menu.contains(e.target)) set(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+})();
+</script>
+</body>
+</html>

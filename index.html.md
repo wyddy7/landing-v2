@@ -7,6 +7,8 @@
 - **Tagline:** I build and ship AI agents and RAG systems end to end.
 - **Availability:** Open to full-time or contract · remote · relocation
 
+Articles: [Has AI made businesses any money?](/articles/ai-payoff/) (all articles: [/articles/](/articles/))
+
 ## About
 
 I'm an AI / LLM engineer based in Yerevan, Armenia, with five years in software

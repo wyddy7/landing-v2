@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script>/* one theme for the whole site: the landing key, dark unless the visitor chose light */try { document.documentElement.dataset.theme = localStorage.getItem('dm-landing-mode') === 'light' ? 'light' : 'dark'; } catch (e) { document.documentElement.dataset.theme = 'dark'; }</script>
+<title>Has AI made businesses any money?</title>
+<link rel="alternate" type="text/markdown" href="index.html.md">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2032%2032%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M21.8%209.6A5.9%204.6%200%201%200%2016%2016A5.9%204.6%200%201%201%2010.2%2022.4M16%202.8V6.8M16%2025.2V29.2%22%20fill%3D%22none%22%20stroke%3D%22%23d97757%22%20stroke-width%3D%223.6%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E">
+<meta name="description" content="Apollo’s chief economist says companies outside tech have seen no financial gains from AI. I did the math: public reports can’t settle this question in either direction.">
+<meta property="og:description" content="Apollo’s chief economist says companies outside tech have seen no financial gains from AI. I did the math: public reports can’t settle this question in either direction.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Has AI made businesses any money?">
+<meta property="og:url" content="https://wyddy.tech/articles/ai-payoff">
+<meta property="og:image" content="https://wyddy.tech/articles/ai-payoff/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A marble Atlas holding up a huge dark boulder, with the words AI and useless?">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/assets/fonts/Jost-wght.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face { font-family: "Jost"; font-weight: 100 900; font-display: swap; src: url(/assets/fonts/Jost-wght.woff2) format("woff2"); }
+@font-face { font-family: "Jost"; font-weight: 100 900; font-style: italic; font-display: swap; src: url(/assets/fonts/Jost-Italic-wght.woff2) format("woff2"); }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #faf9f5; --text: #141413; --prose: #2b2a27; --muted: #75736b; --rule: #e8e6dc;
+  --card: #ffffff; --card-border: #e8e6dc; --tint: #f0eee6;
+  --accent: #d97757; --accent-soft: #f5e4da; --neutral: #b0aea5;
+  --link: #141413;
+  --sans: 'Jost', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --col: 680px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1f1e1d; --text: #f0eee6; --prose: #d6d3c9; --muted: #918f86; --rule: #34332f;
+  --card: #262624; --card-border: #3a3935; --tint: #2e2d2a;
+  --accent: #d97757; --accent-soft: #4a3229; --neutral: #6b6a64; --link: #f0eee6; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1f1e1d; --text: #f0eee6; --prose: #d6d3c9; --muted: #918f86; --rule: #34332f;
+  --card: #262624; --card-border: #3a3935; --tint: #2e2d2a;
+  --accent: #d97757; --accent-soft: #4a3229; --neutral: #6b6a64; --link: #f0eee6; color-scheme: dark; }
+
+html { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { background: var(--bg); font-size: clamp(19px, 1.05rem + 0.4vw, 22px); line-height: 1.6; }
+::selection { background: var(--accent-soft); }
+
+.topbar { border-bottom: 1px solid var(--rule); }
+.topbar-in { max-width: 1200px; margin: 0 auto; padding: 18px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+.topbar a { color: var(--text); text-decoration: none; font-weight: 500; }
+.topbar .crumb { color: var(--muted); }
+.topbar .crumb a { color: var(--muted); font-weight: 400; }
+.topbar .crumb a:hover { color: var(--text); }
+#theme { background: none; border: 1px solid var(--rule); color: var(--muted); border-radius: 999px; padding: 4px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+
+.hero { max-width: calc(var(--col) + 32px); margin: 0 auto; padding: clamp(48px, 8vw, 96px) 16px 8px; }
+/* Cover: one fixed ratio per layout, so the picture scales evenly instead of re-cropping as the width changes.
+   Phones get their own, taller crop through <picture> (art direction); The ratio holds at every width, so nothing jumps. */
+.cover { aspect-ratio: 4 / 1; overflow: hidden; background: #a7a29c; }
+.cover img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+@media (max-width: 699px) { .cover { aspect-ratio: 16 / 9; } }
+.hero-art { --icon: clamp(96px, 18vw, 136px); width: var(--icon); margin: calc(-0.5 * var(--icon) - clamp(48px, 8vw, 96px)) 0 32px; position: relative; }
+.hero-art svg { display: block; width: 100%; height: auto; }
+.kicker { font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+h1 { font-size: clamp(38px, 2rem + 3vw, 62px); line-height: 1.04; font-weight: 500; letter-spacing: -0.02em; }
+.meta { margin-top: 24px; color: var(--muted); font-size: 15px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.layout { max-width: calc(var(--col) + 32px); margin: 0 auto; padding: 0 16px; }
+article { padding: 32px 0 80px; color: var(--text); }
+.toc { grid-column: 1; justify-self: end; width: 200px; display: none; }
+.toc nav { position: sticky; top: 96px; padding-top: 40px; }
+.toc-h { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.toc ol { list-style: none; border-left: 1px solid var(--rule); }
+.toc a { display: block; padding: 5px 0 5px 14px; margin-left: -1px; border-left: 2px solid transparent; font-size: 14px; line-height: 1.35; color: var(--muted); text-decoration: none; }
+.toc a:hover { color: var(--text); }
+.toc a.on { color: var(--text); border-left-color: var(--accent); }
+@media (min-width: 1180px) {
+  .layout { max-width: 1200px; display: grid; grid-template-columns: 1fr minmax(0, var(--col)) 1fr; gap: 0 48px; }
+  article { grid-column: 2; }
+  .toc { display: block; }
+}
+
+article p { margin: 0 0 1.15em; }
+article h2 { font-size: clamp(28px, 1.4rem + 1.4vw, 38px); line-height: 1.12; font-weight: 500; letter-spacing: -0.015em; color: var(--text); margin: 2.2em 0 0.7em; scroll-margin-top: 88px; }
+article strong { font-weight: 600; color: var(--text); }
+article a { color: var(--link); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+article a:hover { color: var(--accent); }
+article ul { margin: 0 0 1.2em; padding: 0; list-style: none; }
+article li { position: relative; padding: 14px 0 14px 28px; border-top: 1px solid var(--rule); }
+article li:last-child { border-bottom: 1px solid var(--rule); }
+article li::before { content: ""; position: absolute; left: 4px; top: 1.15em; width: 8px; height: 8px; border-radius: 2px; background: var(--accent); }
+
+.fig { margin: 2.2em 0; background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: clamp(20px, 4vw, 40px); }
+.fig-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); margin-bottom: 6px; }
+.fig-sub { font-size: 14px; color: var(--muted); margin-bottom: 14px; }
+.legend { display: flex; gap: 20px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin: 10px 0 18px; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; }
+.chart { display: grid; gap: 16px; }
+.chart-group { display: grid; grid-template-columns: 170px 1fr; gap: 16px; align-items: center; padding: 6px 0; }
+.chart-label { font-size: 15px; line-height: 1.3; color: var(--text); font-weight: 500; }
+.chart-label .muted { color: var(--muted); font-weight: 400; }
+.chart-bars { display: grid; gap: 5px; }
+.bar-track { display: flex; align-items: center; gap: 10px; min-height: 16px; }
+.bar { height: 14px; border-radius: 3px; min-width: 2px; }
+.bar.zero { min-width: 0; width: 0 !important; }
+.bar.thick { height: 26px; border-radius: 4px; }
+.bar.neutral, .sw.neutral { background: var(--neutral); }
+.bar.accent, .sw.accent { background: var(--accent); }
+.bar-val { font-size: 14px; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bar-val b { font-size: 18px; font-weight: 600; }
+.bar-note { font-size: 13px; color: var(--muted); }
+.fig-split { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 14px; }
+.fig-split .chart-group { grid-template-columns: 80px 1fr; }
+.fig figcaption { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 14px; line-height: 1.5; font-style: italic; color: var(--muted); }
+article img { max-width: 100%; height: auto; }
+.fig-img { padding: 0; overflow: hidden; background: #faf4ed; }
+.fig-img img { display: block; width: 100%; height: auto; }
+.fig-img figcaption { margin: 0; padding: 16px clamp(20px, 4vw, 40px) 20px; }
+.nfig-title { font-size: clamp(22px, 1.1rem + 0.9vw, 28px); line-height: 1.15; font-weight: 600; letter-spacing: -0.01em; color: var(--text); }
+.nfig-sub { margin-top: 6px; font-size: 15px; color: var(--muted); }
+.nfig-label { font-size: 15px; color: var(--muted); margin-bottom: 8px; }
+.nfig-count { margin-top: 10px; font-size: 16px; color: var(--text); }
+.nfig-count b { font-weight: 600; }
+.grids { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 5vw, 48px); margin-top: 24px; }
+.cells { display: grid; grid-template-columns: repeat(10, 1fr); gap: clamp(2px, 0.6vw, 5px); }
+.cell { aspect-ratio: 1; border-radius: 2px; background-image: radial-gradient(var(--muted) 0.9px, transparent 1.2px); background-size: 4px 4px; opacity: 0.85; }
+.cell.on { background: var(--text); opacity: 1; }
+.nrows { display: grid; gap: 18px; margin-top: 24px; }
+.ntrack { display: flex; align-items: center; gap: 12px; }
+.nbar { height: 26px; border-radius: 3px; background: var(--text); flex: none; transform-origin: left center; width: calc(var(--w) * (100% - 7em)); }
+.nbar.dots { background: radial-gradient(var(--muted) 1px, transparent 1.4px) 0 0 / 5px 5px; }
+.nval { font-size: 17px; font-weight: 600; color: var(--text); white-space: nowrap; font-variant-numeric: tabular-nums; }
+@media (max-width: 620px) {
+  .chart-group { grid-template-columns: 1fr; gap: 6px; }
+  .fig-split { grid-template-columns: 1fr; gap: 20px; }
+  .fig-split .chart-group { grid-template-columns: 80px 1fr; }
+}
+
+.table-wrap { margin: 1.5em 0; border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; background: var(--card); }
+table.claims { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.45; }
+.claims th { text-align: left; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); background: var(--tint); padding: 12px 14px; }
+.claims td { padding: 14px; border-top: 1px solid var(--rule); vertical-align: top; }
+.claims td:first-child { color: var(--muted); font-variant-numeric: tabular-nums; width: 3em; }
+.claims td:nth-child(2) { width: 9.5em; font-weight: 500; }
+.claims td:nth-child(4) { color: var(--muted); }
+@media (max-width: 760px) {
+  .claims thead { display: none; }
+  .claims tr { display: block; padding: 14px 16px; border-top: 1px solid var(--rule); }
+  .claims tr:first-child { border-top: 0; }
+  .claims td { display: block; border: 0; padding: 2px 0; width: auto !important; }
+  .claims td:first-child::before { content: "#"; }
+  .claims td:nth-child(4) { margin-top: 6px; font-style: italic; }
+}
+
+.appendix-in { max-width: 920px; margin: 0 auto; padding: clamp(48px, 7vw, 88px) 16px clamp(56px, 8vw, 96px); font-size: 16px; line-height: 1.55; color: var(--muted); }
+.appendix h2 { font-size: clamp(24px, 1.2rem + 0.8vw, 30px); line-height: 1.15; font-weight: 500; letter-spacing: -0.01em; color: var(--text); margin-bottom: 12px; scroll-margin-top: 88px; }
+.appendix p { max-width: 680px; margin-bottom: 8px; }
+.appendix a { color: var(--text); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.toc-app { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule); }
+
+.appendix-band { background: var(--tint); border-top: 1px solid var(--rule); }
+
+
+
+footer { border-top: 1px solid var(--rule); }
+.footer-in { max-width: var(--col); margin: 0 auto; padding: 40px 16px 64px; font-size: 15px; color: var(--muted); }
+.footer-in a { color: var(--text); }
+
+/* ---- Motion. Everything enters, nothing teleports. Off under prefers-reduced-motion (the class is never set).
+   Entrances run on the Web Animations API with fill "backwards": the hidden state exists only inside a running
+   animation, so a block can never be left invisible. .pending hides a below-the-fold block until it is revealed. ---- */
+:root { --ease-out: cubic-bezier(.22, 1, .36, 1); --spring: cubic-bezier(.34, 1.45, .64, 1); }
+html, body, .topbar, #theme, .fig, article li, .toc a, .appendix-band { transition: background-color .45s var(--ease-out), color .45s var(--ease-out), border-color .45s var(--ease-out); }
+.js-motion .pending { opacity: 0; }
+.js-motion .cell.on { background: radial-gradient(var(--muted) 0.9px, transparent 1.2px) 0 0 / 4px 4px; opacity: .85; }
+.js-motion .cell.on.lit { background: var(--text); opacity: 1; animation: cell-pop .5s var(--spring) both; }
+@keyframes cell-pop { from { transform: scale(.25); } to { transform: none; } }
+
+/* Contact is plain text; the theme control is the symbol of the current theme (sun = light, moon = dark). */
+#contact { background: none; color: var(--text); border: 0; border-radius: 0; padding: 4px 2px; font: inherit; font-size: 15px; cursor: pointer;
+  text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 4px; transition: text-decoration-color .2s; }
+#contact:hover, #contact[aria-expanded="true"] { text-decoration-color: currentColor; }
+#theme { width: 34px; height: 34px; padding: 7px; border: 0; border-radius: 999px; background: none; color: var(--text); display: grid; place-items: center; }
+#theme:hover { background: var(--tint, var(--rule)); }
+#theme svg { grid-area: 1 / 1; width: 20px; height: 20px; }
+:root[data-theme="dark"] #theme .i-sun, :root[data-theme="light"] #theme .i-moon { display: none; }
+/* Sticky top bar with a contact menu: the way to reach the author is always one tap away. */
+.topbar { position: sticky; top: 0; z-index: 20; background: color-mix(in oklab, var(--bg) 84%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2); }
+.top-actions { display: flex; gap: 8px; align-items: center; }
+.contact { position: relative; }
+.contact-menu { position: absolute; right: 0; top: calc(100% + 8px); min-width: 170px; display: grid; padding: 6px;
+  background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; box-shadow: 0 14px 36px rgba(0, 0, 0, .14); transform-origin: top right; }
+.contact-menu[hidden] { display: none; }
+.contact-menu a { padding: 8px 12px; border-radius: 8px; color: var(--text); text-decoration: none; font-size: 15px; font-weight: 400; }
+.contact-menu a:hover { background: var(--tint, var(--rule)); }
+@media (max-width: 560px) { .crumb-last { display: none; } }
+
+/* Theme switch: the new theme spreads as a circle from the switch (View Transitions); colours fade where that API is missing. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; } ::view-transition-new(root) { z-index: 2; }
+.vt-swap, .vt-swap * { transition: none !important; }
+
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+  <span><a href="https://wyddy.tech/">Daniil Makeev</a> <span class="crumb">/ <a href="/articles/">Articles</a><span class="crumb-last"> / AI Payoff</span></span></span>
+  <div class="top-actions">
+    <div class="contact"><button id="contact" type="button" aria-expanded="false" aria-controls="contact-menu">Contact</button>
+      <div class="contact-menu" id="contact-menu" hidden>
+        <a href="mailto:wyddy.work@gmail.com">Email</a>
+        <a href="https://t.me/wyddy7" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://www.linkedin.com/in/daniil-makeev/" target="_blank" rel="noopener">LinkedIn</a>
+      </div></div>
+    <button id="theme" type="button" aria-label="Switch between light and dark theme"><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg></button>
+  </div>
+</div></header>
+
+<div class="cover"><picture>
+  <source media="(max-width: 699px)" srcset="cover-narrow-640.jpg 640w, cover-narrow-1024.jpg 1024w" sizes="100vw">
+  <img src="cover-wide-1536.jpg" srcset="cover-wide-960.jpg 960w, cover-wide-1536.jpg 1536w" sizes="100vw"
+       alt="A marble Atlas holding up a huge dark boulder" width="1536" height="384" fetchpriority="high">
+</picture></div>
+
+<section class="hero">
+  <div class="hero-art"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A coin with a dollar sign">
+<rect width="120" height="120" rx="14" fill="#d97757"/>
+<path d="M60 24.5C81 23.5 96 40 95.5 60.5C95 81 79.5 96 59 95.5C38.5 95 24 79 24.5 59.5C25 40.5 40.5 25.5 60 24.5Z" fill="#faf9f5" stroke="#141413" stroke-width="4" stroke-linejoin="round"/>
+<path d="M70.5 46.5C67.5 41.5 63 39.5 58 39.8C50.5 40.2 45.8 44.6 46.6 50.4C47.5 57 55.5 58.2 61.2 60C68 62.2 73.6 65.4 72.9 72C72.2 78.6 65.6 81.6 58.6 81.1C52.6 80.7 48.4 77.8 46.2 73.4" fill="none" stroke="#141413" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M59.2 31.5L59.6 39.6M58.8 81.4L59.1 88.6" stroke="#141413" stroke-width="5" stroke-linecap="round"/>
+</svg></div>
+  <div class="kicker">Research · AI economics</div>
+  <h1>Has AI made businesses any money?</h1>
+  <div class="meta"><span>Daniil Makeev</span><span>·</span><span>November 2026</span><span>·</span><span>5 min read</span></div>
+</section>
+
+<div class="layout">
+  <aside class="toc"><nav><div class="toc-h">Contents</div><ol><li><a href="#a-flat-line-can-hide-105-million">A flat line can hide $105 million</a></li><li><a href="#the-big-numbers-measure-something-else">The big numbers measure something else</a></li><li><a href="#where-the-money-goes-in-one-project">Where the money goes in one project</a></li><li><a href="#klarna-s-savings">Klarna’s savings</a></li><li><a href="#how-i-would-check-it-inside-a-company">How I would check it inside a company</a></li><li><a href="#what-to-ask-before-calling-ai-profitable">What to ask before calling AI profitable</a></li><li class=toc-app><a href="#the-33-claims">The 33 claims</a></li></ol></nav></aside>
+  <article>
+<p><a target="_blank" rel="noopener" href="https://www.apollo.com/institutional/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector">Apollo</a>’s chief economist says companies outside tech have seen no financial gains from AI. His evidence is a set of charts built from public company reports: outside the biggest tech firms, profit margins stay flat. I build AI systems for a living, so I wanted to know whether that is even true. I did the math. Public reports can’t settle this question in either direction. To know, you have to look inside a company.</p>
+<h2 id="a-flat-line-can-hide-105-million">A flat line can hide $105 million</h2>
+<p>A bathroom scale shows a slightly different number every time you step on it. Before you trust it to tell you whether you gained a pound, you check how much it jumps around. I did the same with company accounts.</p>
+<p>I took <a target="_blank" rel="noopener" href="https://www.sec.gov/Archives/edgar/data/884394/000175272423046862/NPORT_J905_27092374_1222.htm">180 large US companies</a> <a target="_blank" rel="noopener" href="https://www.sec.gov/Archives/edgar/data/1064641/000175272423046851/NPORT_J911_44083836_1222.htm">outside tech, finance and real estate</a>, and compared industries where more of the work is the kind AI can do with the rest. The gain I looked for is those industries pulling ahead of the others by one point of operating margin, say from 10% to 11%. A typical company here had about <a target="_blank" rel="noopener" href="https://www.sec.gov/search-filings/edgar-application-programming-interfaces">$10.5 billion in revenue</a>, so for it one point is roughly $105 million a year. For comparison, Klarna says its AI assistant saves it about $58 million a year. Then I looked at how much margins moved on their own in 2015-2019, before generative AI, and asked how often a test on public accounts would spot a one-point gain inside that movement.</p>
+<figure class="fig nfig">
+  <div class="nfig-title">You could miss a $105M gain</div>
+  <div class="nfig-sub">If the test ran 100 times</div>
+  <div class="grids"><div class="grid-block"><div class="nfig-label">If AI added $105M</div><div class="cells" role="img" aria-label="16 of 100 cells filled"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i></div><div class="nfig-count"><b>16</b> of 100 spotted</div></div><div class="grid-block"><div class="nfig-label">If AI added $313M</div><div class="cells" role="img" aria-label="80 of 100 cells filled"><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell on"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i><i class="cell"></i></div><div class="nfig-count"><b>80</b> of 100 spotted</div></div></div>
+  <figcaption>Figure 1. If the same test could be run 100 times on equally noisy data, how often it would spot a gain of $105 million and of $313 million a year. In reality it runs once. 180 companies, accounts for 2015-2019.</figcaption>
+</figure>
+
+<p>The answer is 16 times out of 100. To be spotted 80 times out of 100, a gain would have to be about $313 million a year. Before collecting any results, I had decided that if the test could not see a one-point gain, I would not run it on the AI years, 2024 and 2025, because a “no effect” from it would mean very little. So I stopped there.</p>
+<p>Apollo’s charts are blunter than my test, because they average every company together. If firms with a tenth of all revenue gained one point of margin, the average would move by a tenth of a point.</p>
+<p>The test has limits: one sample of 180 companies, <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2303.10130">AI exposure</a> estimated from <a target="_blank" rel="noopener" href="https://www.bls.gov/oes/2022/may/oessrci.htm">the jobs people hold in each industry</a> rather than from observed use, and one pre-AI period.</p>
+<h2 id="the-big-numbers-measure-something-else">The big numbers measure something else</h2>
+<p>The optimistic numbers fail in a different way. Forrester’s 132-353% ROI is a projection for a modeled company. McKinsey’s 39% (2025) and 37% (2026) of firms reporting an AI contribution to profit are what respondents say about themselves. <a target="_blank" rel="noopener" href="https://www.bcg.com/assets/2025/the-widening-ai-value-gap.pdf">BCG</a> finds that companies further along with AI have better financial results, but comparing leaders with everyone else does not separate what AI earned from everything else those companies did. I checked 33 numbers like these from 17 studies and reports, and none of them shows what was left after all costs, compared with not using AI. The full list is at the end of the full version of this article.</p>
+<h2 id="where-the-money-goes-in-one-project">Where the money goes in one project</h2>
+<p>To see where the money goes, I took one project. In a large experiment on an international shopping platform, <a target="_blank" rel="noopener" href="https://arxiv.org/html/2510.12049v6">44,614 users</a> got either the usual “support unavailable” reply or an AI chat when they had a question before buying. Per 1,000 users, purchases rose by $274. Note what this compares: an AI chat against no help at all, so it says nothing about replacing a good human service.</p>
+<p>Suppose the shop keeps 20% of a sale after product and running costs. Then the $274 becomes about $55. Take away $4.50 for the model and $20 for the rest of the service, and about $30 per 1,000 users is left to pay for the launch. With a $10,000 launch, the project needs about 330,000 users to break even. The 20% margin and the costs are my assumptions, not the shop’s real budget.</p>
+<p>Model prices keep falling, and people expect that to fix this math. With <a target="_blank" rel="noopener" href="https://platform.claude.com/docs/en/about-claude/pricing">a model ten times cheaper</a>, the project still needs 291,000 users.</p>
+<figure class="fig nfig">
+  <div class="nfig-title">Cheaper model ≠ faster payback</div>
+  <div class="nfig-sub">Users to pay off a $10,000 launch</div>
+  <div class="nrows"><div class="nrow"><div class="nfig-label">Today</div><div class="ntrack"><div class="nbar" style="--w:1.000"></div><span class="nval">330k users</span></div></div><div class="nrow"><div class="nfig-label">10×: expected</div><div class="ntrack"><div class="nbar dots" style="--w:0.100"></div><span class="nval">33k users</span></div></div><div class="nrow"><div class="nfig-label">10×: result</div><div class="ntrack"><div class="nbar" style="--w:0.882"></div><span class="nval">291k users</span></div></div></div>
+  <figcaption>Figure 2. Users needed to pay off a $10,000 launch, assuming a 20% margin, $20 of other cost per 1,000 users, the same sales effect for both models and a steady flow of users. &quot;Expected&quot; is the naive guess that a model ten times cheaper pays off ten times sooner.</figcaption>
+</figure>
+
+<p>The model was a small part of the bill from the start. And if the real sales effect sits at the low end of the experiment’s range, about $84 per 1,000 users, the project loses money with either model.</p>
+<h2 id="klarna-s-savings">Klarna’s savings</h2>
+<p>Klarna is the best-known public case. In February 2024 it <a target="_blank" rel="noopener" href="https://www.prnewswire.com/news-releases/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month-302072744.html">forecast a $40 million annual profit improvement</a> from its AI assistant. In May 2025 its CEO <a target="_blank" rel="noopener" href="https://news.bloomberglaw.com/artificial-intelligence/klarna-rethinks-ai-cost-cutting-plan-with-call-for-real-people">told Bloomberg</a> that the focus on cutting costs had gone too far, and described a pilot to hire human agents so customers would keep a human option. Later that year it reported <a target="_blank" rel="noopener" href="https://www.sec.gov/Archives/edgar/data/2003292/000162828025052805/exhibit992klarnapresenta.htm">$58 million in annual savings</a>, calculated as fewer customer contacts priced at what human agents would have cost. That is avoided cost, and it leaves out what it took to build and run the assistant. In the <a target="_blank" rel="noopener" href="https://www.sec.gov/Archives/edgar/data/2003292/000162828026057573/q22026earningsrelease.htm">second quarter of 2026</a> its customer service and operations costs rose from $48 million to $57 million while the business grew. A rising total in a growing company proves nothing on its own, which is the point: even at Klarna, the assistant’s profit cannot be read from the public numbers.</p>
+<h2 id="how-i-would-check-it-inside-a-company">How I would check it inside a company</h2>
+<p>Roll the AI out to some stores, teams or regions picked at random, and keep the old process in the rest. Over the same months, compare the extra money each side brings in and the quality of the work. Then subtract everything the project costs: launch, models, integration, training, the people who handle escalations and the ongoing support. Hours saved count as money only when they let you skip a hire or serve more customers. A negative balance is an answer too, and it costs less to learn it from a pilot than from a full rollout.</p>
+<h2 id="what-to-ask-before-calling-ai-profitable">What to ask before calling AI profitable</h2>
+<ul>
+<li><strong>Compared with what?</strong> Was there a real working alternative without AI, rather than an easy invented comparison?</li>
+<li><strong>Which money, and when?</strong> Is the financial outcome named, with the time allowed to achieve it?</li>
+<li><strong>What is in the bill?</strong> Does it include launch and all extra costs, including rework and human involvement?</li>
+<li><strong>How was it checked?</strong> Were the comparison, quality standards and stopping conditions set in advance?</li>
+<li><strong>How much demand is there?</strong> Does real demand cover the investment at the quality that was tested?</li>
+</ul>
+
+  </article>
+</div>
+<section class="appendix appendix-band"><div class="appendix-in"><h2 id="the-33-claims">The 33 claims</h2>
+<p>This is the original selected catalog, not a representative market sample. Claims are paraphrased; assessments are the author’s. Later Klarna disclosures are treated separately in the article’s chronology.</p>
+<div class="table-wrap"><table class="claims">
+<thead>
+<tr>
+<th>No.</th>
+<th>Source</th>
+<th>Claim examined</th>
+<th>Assessment</th>
+</tr>
+</thead>
+<tbody>
+<tr><td data-h="No.">1</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.apollo.com/institutional/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector">Apollo / Torsten Slok</a></td><td data-h="Claim examined">AI has produced no financial payoff for US companies outside tech.</td><td data-h="Assessment">The charts measure financial trends; they do not isolate a zero contribution from AI.</td></tr>
+<tr><td data-h="No.">2</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.apollo.com/institutional/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector">Apollo / Torsten Slok</a></td><td data-h="Claim examined">The top 10% of firms account for 99.5% of spending in the displayed Model Serving &amp; Inference category.</td><td data-h="Assessment">A spending distribution; spending share is not adoption share or output share.</td></tr>
+<tr><td data-h="No.">3</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.apollo.com/institutional/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector">Apollo / Torsten Slok</a></td><td data-h="Claim examined">Mainstream US companies are cutting their spending on tokens.</td><td data-h="Assessment">The claim is in Apollo’s note, but the note supplies no data showing a spending reduction.</td></tr>
+<tr><td data-h="No.">4</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://ramp.com/data/ai-index">Ramp AI Index</a></td><td data-h="Claim examined">In September 2026, 55.9% of companies in Ramp’s observed panel paid for AI.</td><td data-h="Assessment">Payments within Ramp’s customer panel, not ROI or a market-wide adoption rate.</td></tr>
+<tr><td data-h="No.">5</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://ramp.com/data/ai-index-oct-2026">Ramp commentary</a></td><td data-h="Claim examined">One percent of firms account for 80% of OpenAI and Anthropic spending in Ramp’s panel.</td><td data-h="Assessment">Payment concentration within a panel, with limited disclosure of the denominator and coverage.</td></tr>
+<tr><td data-h="No.">6</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://arxiv.org/html/2610.11602v1">Lu et al.</a></td><td data-h="Claim examined">In 24.4% of comparisons, success is preserved while the model bill falls.</td><td data-h="Assessment">Paired benchmark outcomes; transfer to projects or company profit is untested.</td></tr>
+<tr><td data-h="No.">7</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://arxiv.org/html/2610.11602v1">Lu et al.</a></td><td data-h="Claim examined">AVRI lowers the Codex bill by 18.0% and OpenCode’s by 23.7%, with the same observed success rates.</td><td data-h="Assessment">Model bills and observed successes, without the full implementation bill.</td></tr>
+<tr><td data-h="No.">8</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://arxiv.org/html/2510.12049v6">Fang et al.</a></td><td data-h="Claim examined">Adding an AI chat where support was unavailable raises purchases per participant by $0.274, or 16.3%.</td><td data-h="Assessment">A randomized comparison with no service; the outcome is purchases, not implementation profit.</td></tr>
+<tr><td data-h="No.">9</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://arxiv.org/html/2510.12049v6">Fang et al.</a></td><td data-h="Claim examined">Adding AI-written product descriptions raises purchases by 2.1%.</td><td data-h="Assessment">An experimental purchase outcome; project profit is not calculated.</td></tr>
+<tr><td data-h="No.">10</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://arxiv.org/html/2510.12049v6">Fang et al.</a></td><td data-h="Claim examined">The authors extrapolate an annual purchase gain of $4.63-5.18 per user.</td><td data-h="Assessment">An annualized extrapolation, not observed annual profit.</td></tr>
+<tr><td data-h="No.">11</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://doi.org/10.1093/qje/qjae044">Brynjolfsson et al.</a></td><td data-h="Claim examined">AI assistance raises resolved support issues per hour by 15% on average.</td><td data-h="Assessment">Support productivity is measured; company profit is not observed.</td></tr>
+<tr><td data-h="No.">12</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">METR, 2025</a></td><td data-h="Claim examined">Tasks take 19% longer with AI; the 95% interval ranges from 2% to 39% longer.</td><td data-h="Assessment">Measured task time in the selected setting, including a slowdown.</td></tr>
+<tr><td data-h="No.">13</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://metr.org/blog/2026-02-24-uplift-update/">METR, 2026</a></td><td data-h="Claim examined">A later study’s estimated speedup is unreliable because of participant and task selection.</td><td data-h="Assessment">The authors qualify the estimate because of selection.</td></tr>
+<tr><td data-h="No.">14</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.rfberlin.com/wp-content/uploads/2026/03/26078.pdf">Humlum and Vestergaard</a></td><td data-h="Claim examined">Estimated effects on pay and recorded hours are near zero, excluding effects above 2% over the studied period.</td><td data-h="Assessment">Pay and hours in this labor market are not the employer’s profit.</td></tr>
+<tr><td data-h="No.">15</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.rfberlin.com/wp-content/uploads/2026/03/26078.pdf">Humlum and Vestergaard</a></td><td data-h="Claim examined">Work is reorganized and AI-related tasks appear before clear changes in average pay.</td><td data-h="Assessment">Evidence of work reorganization does not establish employer returns.</td></tr>
+<tr><td data-h="No.">16</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.prnewswire.com/news-releases/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month-302072744.html">Klarna, 2024</a></td><td data-h="Claim examined">Klarna describes its assistant’s work as equivalent to that of 700 full-time agents.</td><td data-h="Assessment">A reported capacity equivalent, without enough disclosed method for full independent reproduction.</td></tr>
+<tr><td data-h="No.">17</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.prnewswire.com/news-releases/klarna-ai-assistant-handles-two-thirds-of-customer-service-chats-in-its-first-month-302072744.html">Klarna, 2024</a></td><td data-h="Claim examined">Klarna forecasts a $40 million profit improvement for 2024.</td><td data-h="Assessment">A forecast in the original release; later disclosures appear separately in the article’s chronology.</td></tr>
+<tr><td data-h="No.">18</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://doi.org/10.1287/mnsc.2024.06909">Otis et al.</a></td><td data-h="Claim examined">The average effect on a revenue-and-profit index is +0.05 standard deviations; the 95% interval is -0.05 to +0.14.</td><td data-h="Assessment">An experimental business-performance index; the average effect is inconclusive and a full implementation budget is absent.</td></tr>
+<tr><td data-h="No.">19</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://doi.org/10.1287/mnsc.2024.06909">Otis et al.</a></td><td data-h="Claim examined">The index falls by 0.08 standard deviations among initially weaker businesses.</td><td data-h="Assessment">A measured decline relative to control in one subgroup, not an average result for all companies.</td></tr>
+<tr><td data-h="No.">20</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop">Anthropic</a></td><td data-h="Claim examined">Across several enterprise deployments, a single agent with skills often improves quality, task cost and latency relative to alternative architectures.</td><td data-h="Assessment">A vendor summary without sufficient disclosure of matched tasks and repeated trials.</td></tr>
+<tr><td data-h="No.">21</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop">Anthropic</a></td><td data-h="Claim examined">For one customer, a single-loop agent runs about twice as fast as a multi-agent setup.</td><td data-h="Assessment">A single customer example; evidence for generalization is not disclosed.</td></tr>
+<tr><td data-h="No.">22</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop">Anthropic</a></td><td data-h="Claim examined">A demonstration migration cuts latency but misses the delivery-date step in one of two runs.</td><td data-h="Assessment">A demonstration with varying task outcomes, not proof of a universally better architecture.</td></tr>
+<tr><td data-h="No.">23</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://tei.forrester.com/go/microsoft/SMB365Copilot/">Forrester</a></td><td data-h="Claim examined">A composite company’s projected three-year ROI is 132-353%, with $271,000 in present-value costs.</td><td data-h="Assessment">A projection for an assumed composite company, not measured average customer ROI.</td></tr>
+<tr><td data-h="No.">24</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://tei.forrester.com/go/microsoft/SMB365Copilot/">Forrester</a></td><td data-h="Claim examined">The composite model projects up to 6% revenue growth and applies a 10% net margin to estimate extra income.</td><td data-h="Assessment">An income model using an assumed margin, not observed implementation profit.</td></tr>
+<tr><td data-h="No.">25</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://tei.forrester.com/go/microsoft/SMB365Copilot/">Forrester</a></td><td data-h="Claim examined">Modeled operating savings raise the composite’s baseline net margin from 10% to 10.77%.</td><td data-h="Assessment">A calculation under assumptions, not a measured project cash result.</td></tr>
+<tr><td data-h="No.">26</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-2025">McKinsey, 2025</a></td><td data-h="Claim examined">39% of respondents attribute some organizational EBIT contribution to AI.</td><td data-h="Assessment">Respondents’ self-attribution of operating profit to AI.</td></tr>
+<tr><td data-h="No.">27</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-2025">McKinsey, 2025</a></td><td data-h="Claim examined">Workflow redesign is among the factors most closely associated with high AI performance.</td><td data-h="Assessment">An association between responses and practices, not a randomized effect of workflow redesign.</td></tr>
+<tr><td data-h="No.">28</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai">McKinsey, 2026</a></td><td data-h="Claim examined">80% of respondents report that AI improves their own productivity.</td><td data-h="Assessment">Self-reported productivity, not measured task time or profit.</td></tr>
+<tr><td data-h="No.">29</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai">McKinsey, 2026</a></td><td data-h="Claim examined">37% of respondents report a positive AI contribution to EBIT, not materially above the previous year’s share.</td><td data-h="Assessment">Self-attributed profit; similar annual shares do not establish equal effects.</td></tr>
+<tr><td data-h="No.">30</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.bcg.com/assets/2025/the-widening-ai-value-gap.pdf">BCG, 2025</a></td><td data-h="Claim examined">BCG classifies 5% of its sample in the highest AI-maturity category; 60% report minimal material impact.</td><td data-h="Assessment">Maturity categories and self-reports, not audited profitable-project budgets.</td></tr>
+<tr><td data-h="No.">31</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://www.bcg.com/assets/2025/the-widening-ai-value-gap.pdf">BCG, 2025</a></td><td data-h="Claim examined">BCG calls its findings empirical evidence that AI produces financial value sufficient to improve shareholder returns.</td><td data-h="Assessment">A financial comparison of groups; the causal interpretation goes beyond what is established.</td></tr>
+<tr><td data-h="No.">32</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://web-assets.bcg.com/c9/0e/63ca549b4c22a25db351788a4ae6/the-formula-for-agentic-ai-value-sep-2026-web.pdf">BCG, 2026</a></td><td data-h="Claim examined">Almost half of the companies in BCG’s 2026 index create some value: 7.5% in the highest maturity category and 41% scaling.</td><td data-h="Assessment">Categories of value creation, not the share of projects with measured full-cost returns.</td></tr>
+<tr><td data-h="No.">33</td><td data-h="Source"><a target="_blank" rel="noopener" href="https://web-assets.bcg.com/c9/0e/63ca549b4c22a25db351788a4ae6/the-formula-for-agentic-ai-value-sep-2026-web.pdf">BCG, 2026</a></td><td data-h="Claim examined">Companies with high strategic clarity and mature AI use report five times the AI value of companies low on both dimensions.</td><td data-h="Assessment">A comparison of group self-reports; the causal explanation of the ratio is ambiguous.</td></tr>
+</tbody>
+</table></div></div></section>
+
+<footer><div class="footer-in"><a href="https://wyddy.tech/">wyddy.tech</a></div></footer>
+
+<script>
+function themeSwap(el, change) {
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!document.startViewTransition || reduce) { change(); return; }
+  var r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2,
+      R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  // CSS colour transitions would make the new snapshot keep the OLD colours, then the live page fades: a flash.
+  var root = document.documentElement; root.classList.add('vt-swap');
+  var t = document.startViewTransition(change);
+  t.finished.finally(function () { root.classList.remove('vt-swap'); });
+  t.ready.then(function () {
+    document.documentElement.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + R + 'px at ' + x + 'px ' + y + 'px)'] },
+      { duration: 650, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' });
+  });
+}
+</script>
+<script>
+(function () {
+  var root = document.documentElement, btn = document.getElementById('theme');
+    btn.addEventListener('click', function () { themeSwap(btn, function () {
+    var dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark';
+    try { localStorage.setItem('dm-landing-mode', root.dataset.theme); } catch (e) {}
+  }); });
+  var links = document.querySelectorAll('.toc a'), map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) {
+      links.forEach(function (a) { a.classList.remove('on'); });
+      var a = map[e.target.id]; if (a) a.classList.add('on'); } });
+  }, { rootMargin: '0px 0px -70% 0px' });
+  document.querySelectorAll('article h2[id]').forEach(function (h) { io.observe(h); });
+})();
+
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+  var root = document.documentElement, OUT = 'cubic-bezier(.22,1,.36,1)', SPRING = 'cubic-bezier(.34,1.45,.64,1)';
+  root.classList.add('js-motion');
+  // One queue for the whole page: a block may start only after the block above it has started,
+  // so the eye always travels top to bottom. A long backlog (fast scroll) is compressed, not dropped.
+  var cursor = 0, log = window.__motionLog = [];
+  function slot(step) {
+    var now = performance.now(), start = Math.max(now, cursor), ahead = start - now;
+    cursor = start + (ahead > 1500 ? 40 : step || 110);
+    return ahead;
+  }
+  function enter(el, from, opts) {
+    var delay = slot(opts && opts.step);
+    el.classList.remove('pending');
+    log.push([el.className || el.tagName, Math.round(performance.now() + delay)]);
+    el.animate([from || { opacity: 0, transform: 'translateY(16px)', filter: 'blur(6px)' }, { opacity: 1, transform: 'none', filter: 'none' }],
+               { duration: (opts && opts.duration) || 750, delay: delay, easing: (opts && opts.easing) || OUT, fill: 'backwards' });
+    return delay;
+  }
+
+  // 1. Hero, in reading order: cover, icon, kicker, title, meta.
+  var cover = document.querySelector('.cover img');
+  if (cover) enter(cover, { opacity: 0, transform: 'scale(1.07)', filter: 'none' }, { duration: 1400, step: 260 });
+  var icon = document.querySelector('.hero-art');
+  if (icon) enter(icon, { opacity: 0, transform: 'translateY(22px) scale(.82)', filter: 'none' }, { duration: 850, easing: SPRING, step: 160 });
+  document.querySelectorAll('.hero .kicker, .hero h1, .hero .meta').forEach(function (el) { enter(el); });
+
+  // 2. Every other block waits hidden until it reaches the screen, then joins the queue in on-screen order.
+  var blocks = document.querySelectorAll('article > p, article > h2, article > ul > li, article > figure, .toc, .appendix-in > *');
+  blocks.forEach(function (el) { el.classList.add('pending'); });
+  var seen = new IntersectionObserver(function (entries) {
+    entries.filter(function (e) { return e.isIntersecting; })
+      .map(function (e) { seen.unobserve(e.target); var r = e.target.getBoundingClientRect(); return { el: e.target, top: r.top, left: r.left }; })
+      .sort(function (a, b) { return Math.abs(a.top - b.top) > 8 ? a.top - b.top : a.left - b.left; })
+      .forEach(function (x) {
+        var delay = enter(x.el);
+        if (x.el.classList.contains('nfig')) setTimeout(function () { play(x.el); }, delay);
+      });
+  }, { threshold: 0, rootMargin: '0px 0px -6% 0px' });
+  blocks.forEach(function (el) { seen.observe(el); });
+
+  // 3. Charts: cells light up one by one, bars grow, numbers count up.
+  function count(el, to, ms, fmt) {
+    var t0 = performance.now();
+    (function step() {
+      var p = Math.min(1, (performance.now() - t0) / ms), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.round(to * e));
+      if (p < 1) setTimeout(step, 16);
+    })();
+  }
+  function play(fig) {
+    fig.querySelectorAll('.grid-block').forEach(function (b) {
+      var on = b.querySelectorAll('.cell.on'), span = 900, gap = span / on.length;
+      on.forEach(function (c, i) { setTimeout(function () { c.classList.add('lit'); }, 350 + i * gap); });
+      var n = b.querySelector('.nfig-count b');
+      if (n) { var to = +n.textContent; n.textContent = '0'; setTimeout(function () { count(n, to, span, String); }, 350); }
+    });
+    fig.querySelectorAll('.nrow').forEach(function (r, i) {
+      var d = 250 + i * 180;
+      r.querySelector('.nbar').animate([{ transform: 'scaleX(0)' }, { transform: 'none' }], { duration: 1100, delay: d, easing: SPRING, fill: 'backwards' });
+      var v = r.querySelector('.nval'), m = v.textContent.match(/^([0-9]+)k (.*)$/);
+      v.animate([{ opacity: 0, transform: 'translateX(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 600, delay: d + 500, easing: OUT, fill: 'backwards' });
+      if (m) { v.textContent = '0k ' + m[2]; setTimeout(function () { count(v, +m[1], 900, function (x) { return x + 'k ' + m[2]; }); }, d + 500); }
+    });
+  }
+
+  // 4. Resize: when a breakpoint changes the layout, blocks travel to their new place (FLIP) instead of jumping.
+  var tracked = Array.prototype.slice.call(document.querySelectorAll('.cover, .hero-art, .hero h1, .hero .meta, .toc, article, article > figure'));
+  function rects() { return tracked.map(function (el) { var r = el.getBoundingClientRect(); return { x: r.left, y: r.top + scrollY, w: r.width, h: r.height }; }); }
+  var last = rects(), raf = 0;
+  addEventListener('resize', function () {
+    if (raf) return;
+    raf = requestAnimationFrame(function () {
+      raf = 0;
+      var now = rects();
+      tracked.forEach(function (el, i) {
+        var a = last[i], b = now[i], dx = a.x - b.x, dy = a.y - b.y;
+        if (el.classList.contains('cover') && Math.abs(a.h - b.h) > 30) {
+          el.animate([{ height: a.h + 'px' }, { height: b.h + 'px' }], { duration: 650, easing: OUT });
+        } else if (!a.w && b.w) {
+          el.animate([{ opacity: 0, transform: 'translateX(-24px)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: OUT });
+        } else if (Math.abs(dx) > 24 || Math.abs(dy) > 60) {
+          el.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'none' }], { duration: 650, easing: OUT });
+        }
+      });
+      last = now;
+    });
+  });
+})();
+
+(function () {
+
+  // the theme symbol turns over when the theme changes
+  var tb = document.getElementById('theme');
+  if (tb && tb.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+    tb.addEventListener('click', function () { tb.animate([{ transform: 'rotate(-90deg) scale(.6)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 420, easing: 'cubic-bezier(.34,1.45,.64,1)' }); });
+  // Contact menu: opens with a short scale-in, closes on outside click or Escape.
+  var btn = document.getElementById('contact'), menu = document.getElementById('contact-menu');
+  if (!btn || !menu) return;
+  function set(open) {
+    btn.setAttribute('aria-expanded', String(open));
+    if (open) {
+      menu.hidden = false;
+      if (menu.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+        menu.animate([{ opacity: 0, transform: 'translateY(-6px) scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.34,1.45,.64,1)' });
+    } else menu.hidden = true;
+  }
+  btn.addEventListener('click', function (e) { e.stopPropagation(); set(menu.hidden); });
+  document.addEventListener('click', function (e) { if (!menu.hidden && !menu.contains(e.target)) set(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+})();
+</script>
+</body>
+</html>

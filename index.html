@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0c0c0b">
+<meta name="theme-color" content="#1f1e1d">
 <script>
 /* Restore the saved palette before the first paint, including the fallback. */
 document.documentElement.classList.add('js');
@@ -42,15 +42,15 @@ try {
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0c0c0b;
-  --text: #f2f0eb;
-  --muted: #6a6860;
-  --faint: #8a8780;
-  --rule: #1e1e1c;
-  --accent: oklch(83% 0.22 95);
-  --card-hover: rgba(255,255,255,0.025);
-  --illus-bg: #111110;
-  --bezel: #26261f;
+  --bg: #1f1e1d;
+  --text: #f0eee6;
+  --muted: #918f86;
+  --faint: #c4c1b8;
+  --rule: #34332f;
+  --accent: #d97757;   /* terracotta, the article icon's colour (was amber oklch(83% 0.22 95)) */
+  --card-hover: rgba(255,255,255,0.035);
+  --illus-bg: #262624;
+  --bezel: #3a3935;
   --plate-shadow: 0 18px 40px rgba(0,0,0,.46);
   --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --sans: 'Jost', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Helvetica Neue', Arial, sans-serif;
@@ -73,7 +73,7 @@ html[data-theme="light"] {
   --muted: #7c756c;
   --faint: #5c5650;
   --rule: #efe5da;
-  --accent: #2c2620;
+  --accent: #d97757;
   --card-hover: rgba(60,40,20,0.04);
   --illus-bg: #f2e9e1;
   --bezel: #e8dccd;
@@ -214,6 +214,8 @@ html.js .tagline .spin-full { position: absolute; width: 1px; height: 1px; overf
 }
 .nav a:hover, .nav a.active { color: var(--text); }
 .nav a:hover .nav-line, .nav a.active .nav-line { width: 56px; background: var(--text); }
+.nav-out { font-size: 0.9em; letter-spacing: 0; margin-left: -6px; transition: transform .2s; }
+.nav a:hover .nav-out { transform: translate(2px, -2px); }
 
 /* socials */
 .socials {
@@ -456,8 +458,8 @@ html[data-theme="light"] .mock-digest {
 }
 html[data-theme="light"] .chat-bubble--q {
   color: #2a2420;
-  background: oklch(88% 0.105 92);
-  border-color: oklch(80% 0.13 90);
+  background: #f5ddd2;
+  border-color: #e6ad97;
 }
 .chat-bubble--a { align-self: flex-start; border-bottom-left-radius: 5px; }
 .chat-bubble--a strong { font-weight: 600; }
@@ -781,23 +783,23 @@ html.js .legacy { display: none; }
 @keyframes chat-spin { to { transform: rotate(360deg); } }
 
 .chat-foot { padding-top: 12px; }
-.chat-chips { display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; align-items: flex-start; }
+/* Suggestions read like the start screen of a chat app: up to 3 plain sentences under the box, a small icon, no borders.
+   The rows are a stack: a used row leaves, the rest slide up, a new one comes in at the bottom (stackStep below). */
+.chat-chips { display: flex; flex-direction: column; align-items: stretch; width: 100%; padding-top: 4px; }
 .chat-chip {
-  font: inherit;
-  font-size: var(--chat-fs);
-  font-weight: 500;
-  line-height: 1.35;
-  color: var(--text);
-  background: color-mix(in srgb, var(--text) 4%, transparent);
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  padding: 7px 14px;
+  all: unset; box-sizing: border-box; width: 100%;
+  display: flex; align-items: center; gap: 14px;
+  padding: 8px 12px; border-radius: 12px;
+  font-size: var(--chat-fs); line-height: 1.35; color: var(--faint);
   cursor: pointer;
-  transition: color .15s, border-color .15s, background .15s, opacity .15s;
+  transition: color .2s, background-color .2s;
 }
-.chat-chip:hover { color: var(--accent); border-color: var(--accent); }
-.chat-chips .chat-chip { opacity: .8; }
-.chat-chips .chat-chip:hover { opacity: 1; }
+.chat-chip svg { width: 18px; height: 18px; flex: none; color: var(--muted); transition: color .2s, transform .35s cubic-bezier(.34,1.45,.64,1); }
+.chat-chip:focus-visible { color: var(--text); background: var(--card-hover); }
+@media (hover: hover) {   /* a tap on a phone must not leave the row lit */
+  .chat-chip:hover { color: var(--text); background: var(--card-hover); }
+  .chat-chip:hover svg { color: var(--accent); transform: translateX(2px); }
+}
 .msg-when { font-size: var(--chat-fs-s); color: var(--muted); }
 .cv-view { padding: 4px 4px 8px; font-size: calc(var(--chat-fs) - 1px); line-height: 1.45; }
 .cv-view > * { transition: none; }
@@ -848,12 +850,6 @@ html[data-theme="light"] .pin-title { color: var(--text); }
 @keyframes blur-in { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); } }
 @media (prefers-reduced-motion: reduce) { .chat .dissolve, .bl { animation: none; } }
 .msg-body p + p { margin-top: 12px; }
-.chat-chip.is-used { color: var(--faint); background: transparent; }
-.chat-chips .chat-chip.is-dup { opacity: .38; }
-.chat-chips .chat-chip.is-dup:hover { opacity: .7; }
-.chat-chip:disabled { cursor: default; opacity: .45; }
-html[data-theme="light"] .chat-chip { border-color: #e2d6c6; background: #fffdf8; }
-html[data-theme="light"] .chat-chip.is-used { background: transparent; }
 
 /* Phone and tablet: the first screen is the identity column; the chat is a canvas of its own below it.
    "About me ↓" slides it up over the page, "↑ Back to main" (or the system back gesture) slides it away. */
@@ -938,12 +934,19 @@ html[data-theme="light"] .chat-chip.is-used { background: transparent; }
 .chat-composer button:hover { filter: brightness(1.06); }
 .chat-composer.is-busy { opacity: .55; pointer-events: none; }
 html[data-theme="light"] .chat-composer { background: #fffdf8; border-color: #e2d6c6; }
-html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92); color: #2a2420; box-shadow: inset 0 0 0 1px oklch(80% 0.13 90); }
+html[data-theme="light"] .chat-composer button { background: #f5ddd2; color: #2a2420; box-shadow: inset 0 0 0 1px #e6ad97; }
 [hidden] { display: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .chat .fade, .msg-body .w { animation: none; }
 }
+
+/* Theme switch: the new theme spreads as a circle from the switch (View Transitions); colours fade where that API is missing. */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; } ::view-transition-new(root) { z-index: 2; }
+.vt-swap, .vt-swap * { transition: none !important; }
+
+html, body { transition: background-color .45s ease, color .45s ease; }
 </style>
 <script>
 /* Decide before paint. Every failure/input path releases this short-lived gate. */
@@ -1003,6 +1006,7 @@ html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92)
           <li><a href="#experience"><span class="nav-line" aria-hidden="true"></span>Experience</a></li>
           <li><a href="#projects"><span class="nav-line" aria-hidden="true"></span>Projects</a></li>
           <li><a href="#skills"><span class="nav-line" aria-hidden="true"></span>Skills</a></li>
+          <li><a href="/articles/"><span class="nav-line" aria-hidden="true"></span>Articles <span class="nav-out" aria-hidden="true">↗</span></a></li>
         </ul>
       </nav>
     </div>
@@ -1197,18 +1201,32 @@ html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92)
 <script>
 (function () {
   /* theme */
+function themeSwap(el, change) {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!document.startViewTransition || reduce) { change(); return; }
+    var r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2,
+        R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    // CSS colour transitions would make the new snapshot keep the OLD colours, then the live page fades: a flash.
+    var root = document.documentElement; root.classList.add('vt-swap');
+    var t = document.startViewTransition(change);
+    t.finished.finally(function () { root.classList.remove('vt-swap'); });
+    t.ready.then(function () {
+      document.documentElement.animate({ clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + R + 'px at ' + x + 'px ' + y + 'px)'] },
+        { duration: 650, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' });
+    });
+  }
   const KEY = 'dm-landing-mode';
   let mode = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
   function apply(m){
     if (m === 'light') document.documentElement.setAttribute('data-theme','light');
     else document.documentElement.removeAttribute('data-theme');
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', m==='light' ? '#faf4ed' : '#0c0c0b');
+    if (meta) meta.setAttribute('content', m==='light' ? '#faf4ed' : '#1f1e1d');
   }
   const t = document.getElementById('themeToggle');
   apply(mode);
   if (t) t.setAttribute('aria-checked', String(mode === 'dark'));
-  if (t) t.addEventListener('click', () => { mode = mode==='light'?'dark':'light'; apply(mode); t.setAttribute('aria-checked', String(mode === 'dark')); try { localStorage.setItem(KEY, mode); } catch (_) {} });
+  if (t) t.addEventListener('click', () => themeSwap(t, () => { mode = mode==='light'?'dark':'light'; apply(mode); t.setAttribute('aria-checked', String(mode === 'dark')); try { localStorage.setItem(KEY, mode); } catch (_) {} }));
 
   /* nav active-on-scroll */
   const links = [...document.querySelectorAll('.nav a')];
@@ -1295,17 +1313,25 @@ html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92)
   };
   // The script: every step is a question the visitor sends and one message in reply.
   var STEPS = [
-    { q: 'Projects?', msg: 'hao', topic: 'projects' },
-    { q: 'Another project? (2/4)', msg: 'browd', topic: 'projects' },
-    { q: 'Another project? (3/4)', msg: 'netwho', topic: 'projects' },
-    { q: 'Another project? (4/4)', msg: 'digest', topic: 'projects' },
-    { q: 'Experience?', msg: 'experience', topic: 'experience' },
-    { q: 'Stack & Evals?', msg: 'stack', topic: 'stack' },
-    { q: 'Logistics?', msg: 'logistics', topic: 'logistics' },
-    { q: 'Contact?', msg: 'contact', topic: 'contact' }
+    { q: 'What have you shipped?', msg: 'hao', topic: 'projects' },
+    { q: 'Next project? (2 of 4)', msg: 'browd', topic: 'projects' },
+    { q: 'Next project? (3 of 4)', msg: 'netwho', topic: 'projects' },
+    { q: 'Next project? (4 of 4)', msg: 'digest', topic: 'projects' },
+    { q: 'Walk me through your experience', msg: 'experience', topic: 'experience' },
+    { q: 'What is your stack, and how do you test?', msg: 'stack', topic: 'stack' },
+    { q: 'Location & start date?', msg: 'logistics', topic: 'logistics' },
+    { q: 'Give me your contact', msg: 'contact', topic: 'contact' }
   ];
   // After the script: never a dead end. A variable reward (another generated video), then start over.
-  var BONUS = [{ q: 'Another video?', msg: 'reel2' }, { q: 'Another video?', msg: 'reel3' }];
+  var ICON = {   // 24px line icons for the suggestion rows; stack = a hammer
+    projects: '<path d="M4 7h16v12H4z"/><path d="M9 7V5h6v2"/>',
+    experience: '<path d="M4 18c4 0 4-12 8-12s4 12 8 12"/>',
+    stack: '<path d="M14.5 4.5l5 5-2.5 2.5-5-5z"/><path d="M13.2 8.8L4 18l2 2 9.2-9.2"/>',
+    logistics: '<path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>',
+    contact: '<path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/>',
+    restart: '<path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/>'
+  };
+  var BONUS = [{ q: 'Show me another video', msg: 'reel2' }, { q: 'Show me another video', msg: 'reel3' }];
   var TOPICS = { projects: 'projects', experience: 'experience', stack: 'skills', logistics: 'about', contact: null };
 
   function el(tag, cls, html) { var n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
@@ -1392,32 +1418,34 @@ html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92)
   // Chip per topic: jumps to that topic's first question.
   Object.keys(TOPICS).forEach(function (t) {
     var first = STEPS.findIndex(function (st) { return st.topic === t; });
-    var c = el('button', 'chat-chip'); c.type = 'button'; c.textContent = STEPS[first].q;
+    var c = el('button', 'chat-chip'); c.type = 'button'; setChip(c, t, STEPS[first].q); c.hidden = true;   // the stack shows them in
     c.addEventListener('click', function () { request(first); });
     chips[t] = c; chipsBox.appendChild(c);
   });
+  function setChip(c, key, text) {
+    c.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON[key] + '</svg>';
+    c.appendChild(document.createTextNode(text));
+  }
   function markNav(t) {
     var nav = TOPICS[t]; if (!nav) return;
     document.querySelectorAll('.nav a').forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + nav); });
   }
-  var restartChip = el('button', 'chat-chip chat-chip--restart'); restartChip.type = 'button'; restartChip.textContent = 'Start over?'; restartChip.hidden = true;
+  var restartChip = el('button', 'chat-chip chat-chip--restart'); restartChip.type = 'button'; setChip(restartChip, 'restart', 'Start over'); restartChip.hidden = true;
   restartChip.addEventListener('click', function () { if (!busy) restart(); });
   chipsBox.appendChild(restartChip);
-  // The chip row wraps to more lines once Experience and Start over join it, and the log (flex: 1) would
-  // shrink under the reader. Reserve the height of the fullest row up front; re-measure when the width changes.
+  // The stack never holds more than 3 rows: reserve exactly that up front, so the log (flex: 1) never jumps.
   function reserveChips() {
-    var hidden = [].filter.call(chipsBox.children, function (c) { return c.hidden; });
-    hidden.forEach(function (c) { c.hidden = false; });
-    chipsBox.style.minHeight = '';
-    chipsBox.style.minHeight = chipsBox.getBoundingClientRect().height + 'px';
-    hidden.forEach(function (c) { c.hidden = true; });
+    var probe = chipsBox.querySelector('.chat-chip'), was = probe.hidden;
+    probe.hidden = false;
+    chipsBox.style.minHeight = (3 * probe.getBoundingClientRect().height + 4) + 'px';
+    probe.hidden = was;
   }
   var chipsWidth = 0;
   new ResizeObserver(function (entries) {
     var w = entries[0].contentRect.width;
     if (w !== chipsWidth) { chipsWidth = w; reserveChips(); }
   }).observe(chipsBox);
-  if (document.fonts) document.fonts.ready.then(reserveChips);   // chip widths change once the web font lands
+  if (document.fonts) document.fonts.ready.then(reserveChips);   // row height changes once the web font lands
   var bonusPos = 0;
   function findNext(after) {
     for (var i = after + 1; i < STEPS.length; i++) if (!sent[i]) return i;
@@ -1429,23 +1457,54 @@ html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92)
   var lastTopic = null;
   function labelFor(i) {
     var st = STEPS[i];
-    if (st.topic === 'projects' && lastTopic !== 'projects' && st.q.indexOf('Another project?') === 0) return st.q.replace('Another project?', 'Back to projects?');
+    if (st.topic === 'projects' && lastTopic !== 'projects' && st.q.indexOf('Next project?') === 0) return st.q.replace('Next project?', 'Back to projects?');
     return st.q;
   }
   function nextLabel() {
     if (nextIdx >= 0) return labelFor(nextIdx);
-    return bonusPos < BONUS.length ? BONUS[bonusPos].q : 'Start over?';
+    return bonusPos < BONUS.length ? BONUS[bonusPos].q : 'Start over';
   }
   function syncComposer() {
     input.value = nextLabel();
-    // Start over is available from any point once the visitor has asked anything — no dead end mid-chat either.
-    restartChip.hidden = mode !== 'chat';
-    if (chips.experience) chips.experience.hidden = mode === 'cv';   // the CV view already shows it
-    // The chip that would send exactly what the composer already offers is dimmed — it is the same action twice.
+    // The row that would send exactly what the composer already offers is left out — it is the same action twice.
     Object.keys(chips).forEach(function (t) {
       chips[t].classList.toggle('is-dup', nextIdx >= 0 && STEPS.findIndex(function (st) { return st.topic === t; }) === nextIdx);
     });
     form.classList.toggle('is-busy', busy);
+    stackRows();
+  }
+  // At most 3 rows: the unused topics the composer does not already offer; in the chat, Start over is always the last
+  // (no dead end mid-chat), and Experience waits until the CV view is gone (that view already shows it).
+  // A row that leaves fades out first; the rows that stay slide to their new place; a new row rises in at the bottom.
+  var stackBusy = Promise.resolve(), stackChat = false;
+  function stackRows() { stackBusy = stackBusy.then(stackStep); }
+  async function stackStep() {
+    var chat = mode === 'chat' || stackChat;
+    var topics = Object.keys(chips).filter(function (t) {
+      var c = chips[t]; return !c.classList.contains('is-used') && !c.classList.contains('is-dup') && !(t === 'experience' && !chat);
+    }).map(function (t) { return chips[t]; });
+    var want = chat ? topics.slice(0, 2).concat([restartChip]) : topics.slice(0, 3);
+    var shown = [].filter.call(chipsBox.children, function (c) { return !c.hidden; });
+    var leaving = shown.filter(function (c) { return want.indexOf(c) < 0; });
+    if (!reduced && leaving.length) {
+      await Promise.all(leaving.map(function (c) {
+        return c.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(-10px)' }], { duration: 180, easing: 'ease-in', fill: 'forwards' }).finished;
+      }));
+    }
+    var before = new Map(); shown.forEach(function (c) { before.set(c, c.getBoundingClientRect().top); });
+    leaving.forEach(function (c) { c.getAnimations().forEach(function (a) { a.cancel(); }); });
+    [].slice.call(chipsBox.children).forEach(function (c) { c.hidden = want.indexOf(c) < 0; });
+    want.forEach(function (c) { chipsBox.appendChild(c); });
+    if (reduced) return;
+    var k = 0;
+    want.forEach(function (c) {
+      if (before.has(c)) {
+        var dy = before.get(c) - c.getBoundingClientRect().top;
+        if (dy) c.animate([{ transform: 'translateY(' + dy + 'px)' }, { transform: 'none' }], { duration: 320, easing: 'cubic-bezier(.22,1,.36,1)' });
+      } else {
+        c.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 120 + 70 * k++, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' });
+      }
+    });
   }
   async function sendBonus() {
     busy = true; userScrolled = false; syncComposer();
@@ -1495,7 +1554,7 @@ html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92)
     await dissolve([].slice.call(log.children).reverse());
     log.textContent = '';
     log.scrollTop = 0;
-    sent = []; nextIdx = 0; bonusPos = 0; lastQ = null; lastTopic = null;
+    sent = []; nextIdx = 0; bonusPos = 0; stackChat = false; lastQ = null; lastTopic = null;
     Object.keys(chips).forEach(function (t) { chips[t].classList.remove('is-used'); });
     document.querySelectorAll('.nav a').forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#about'); });   // back on the CV view
     var cv = cvTemplate.cloneNode(true);
@@ -1515,6 +1574,9 @@ html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92)
   log.addEventListener('touchmove', function () { userScrolled = true; }, { passive: true });
 
   async function sendStep(i) {
+    // Settle the stack once, at the click: the picked row leaves and the next question is known now,
+    // so the answer arriving does not reshuffle the rows a second time.
+    chips[STEPS[i].topic].classList.add('is-used'); sent[i] = true; nextIdx = findNext(i); stackChat = true;
     busy = true; userScrolled = false; syncComposer();
     await enterChat();
     var st = STEPS[i];
@@ -1568,7 +1630,7 @@ html[data-theme="light"] .chat-composer button { background: oklch(88% 0.105 92)
   window.addEventListener('popstate', function () { setOpen(!!(history.state && history.state.chat)); });
   if (location.hash === '#chat' && phone.matches) { history.replaceState({ chat: 1 }, '', '#chat'); setOpen(true); }
 
-  document.querySelectorAll('.nav a').forEach(function (a) {
+  document.querySelectorAll('.nav a[href^="#"]').forEach(function (a) {   // in-page sections only; /articles/ is a real link
     a.addEventListener('click', function (e) {
       var target = a.getAttribute('href').slice(1);
       e.preventDefault();
