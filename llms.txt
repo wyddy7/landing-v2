@@ -47,6 +47,12 @@
 - Live, running daily.
 - Source: https://github.com/wyddy7/claude-digest
 
+## Writing
+
+- **Has AI made businesses any money?** (2026-11-01) — Apollo’s chief economist says companies outside tech have seen no financial gains from AI. I did the math: public reports can’t settle this question in either direction. A test on 180 large US companies' public accounts would spot a one-point margin gain (~$105M a year for a typical company) only 16 times out of 100; the article proposes a randomized rollout inside one company instead.
+  - Article: https://wyddy.tech/articles/ai-payoff/
+  - All articles: https://wyddy.tech/articles/
+
 ## Contact
 
 - Email: wyddy.work@gmail.com
@@ -65,6 +71,8 @@ Each HTML page also advertises its twin via `<link rel="alternate" type="text/ma
 - Case · NetWho (contact RAG): https://wyddy.tech/case-netwho.html.md
 - Case · Digest Bot (news digest): https://wyddy.tech/case-digest.html.md
 - Case · Video pipeline (hao.vc): https://wyddy.tech/case-video-pipeline.html.md
+- Articles: https://wyddy.tech/articles/index.html.md
+- Article · Has AI made businesses any money?: https://wyddy.tech/articles/ai-payoff/index.html.md
 
 ## Agent Resources
 

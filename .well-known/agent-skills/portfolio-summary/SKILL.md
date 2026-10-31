@@ -19,6 +19,10 @@ Daniil Makeev is a Senior AI / LLM engineer with 5 years in software, currently 
 - NetWho, a live multi-tenant contact RAG on Telegram
 - Digest, a live daily digest with a separate stateful chat agent (DeepAgents, LangGraph)
 
+## Writing
+
+- "Has AI made businesses any money?" (2026-11-01): why public company reports cannot show whether AI paid off, and how to test it inside one company — https://wyddy.tech/articles/ai-payoff/
+
 ## Logistics
 
 - Yerevan, Armenia (UTC+4); available immediately

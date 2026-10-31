@@ -1,5 +1,11 @@
 # Has AI made businesses any money?
 
+> Apollo’s chief economist says companies outside tech have seen no financial gains from AI. I did the math: public reports can’t settle this question in either direction.
+
+- **Canonical:** https://wyddy.tech/articles/ai-payoff/
+- **Author:** Daniil Makeev (https://wyddy.tech/)
+- **Published:** 2026-11-01
+
 [Apollo](https://www.apollo.com/institutional/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector)’s chief economist says companies outside tech have seen no financial gains from AI. His evidence is a set of charts built from public company reports: outside the biggest tech firms, profit margins stay flat. I build AI systems for a living, so I wanted to know whether that is even true. I did the math. Public reports can’t settle this question in either direction. To know, you have to look inside a company.
 
 ## A flat line can hide $105 million

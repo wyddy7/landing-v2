@@ -11,6 +11,12 @@ Before editing anything here, know the **cascade rule**:
   CSS/markup-only edits with no content change need no twin update; if that hook
   objects, fix the hook — never `--no-verify`, which also switches off the hooks below.
 
+Articles (`articles/<slug>/`) are generated: the page, its twin and its images are
+copied in by a publish script from the article's source package in the parent monorepo.
+Edit the source there and republish — a hand edit here is overwritten. The list page
+`articles/index.html` (+ twin), `llms.txt` and `sitemap.xml` are hand-kept: a new article
+goes into all three.
+
 ## Commits — this repo is public
 
 - Everything here is public: commits, messages, branch names, PR titles and bodies.
