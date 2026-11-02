@@ -20,4 +20,5 @@ Built on a fork of Nanobrowser (https://github.com/nanobrowser/nanobrowser), Apa
 
 Next case: [Contact RAG in Telegram](https://wyddy.tech/case-netwho.html)
 
-Get in touch: https://t.me/wyddy7
+Book a call (30 or 45 min): https://cal.com/makeev/call
+Or message me on Telegram: https://t.me/wyddy7

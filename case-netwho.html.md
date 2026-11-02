@@ -16,4 +16,5 @@ Stack: Python · pgvector · Supabase · Pydantic v2 · Docker
 
 Next case: [Personalized AI digest](https://wyddy.tech/case-digest.html)
 
-Get in touch: https://t.me/wyddy7
+Book a call (30 or 45 min): https://cal.com/makeev/call
+Or message me on Telegram: https://t.me/wyddy7

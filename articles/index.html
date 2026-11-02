@@ -81,14 +81,22 @@ h1 { font-size: clamp(38px, 2rem + 3vw, 62px); line-height: 1.04; font-weight: 5
 ::view-transition-old(root) { z-index: 1; } ::view-transition-new(root) { z-index: 2; }
 .vt-swap, .vt-swap * { transition: none !important; }
 
+.top-call { display: inline-flex; align-items: center; gap: 7px; color: var(--text); text-decoration: none; font-size: 15px; font-weight: 500;
+  padding: 4px 2px; border-bottom: 1.5px solid var(--accent); line-height: 1.2; }
+.top-call svg { width: 17px; height: 17px; }
+.topbar a.top-call:hover { color: var(--accent); }
+#contact { color: var(--muted); }
+@media (max-width: 420px) { .top-call span { display: none; } }
 </style>
 </head>
 <body>
 <header class="topbar"><div class="topbar-in">
   <span><a href="https://wyddy.tech/">Daniil Makeev</a> <span class="crumb">/ Articles</span></span>
   <div class="top-actions">
+    <a class="top-call" href="https://cal.com/makeev/call" target="_blank" rel="noopener" aria-label="Book a call (opens cal.com)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg><span>Book a call</span></a>
     <div class="contact"><button id="contact" type="button" aria-expanded="false" aria-controls="contact-menu">Contact</button>
       <div class="contact-menu" id="contact-menu" hidden>
+        <a href="https://cal.com/makeev/call" target="_blank" rel="noopener">Book a call</a>
         <a href="mailto:wyddy.work@gmail.com">Email</a>
         <a href="https://t.me/wyddy7" target="_blank" rel="noopener">Telegram</a>
         <a href="https://www.linkedin.com/in/daniil-makeev/" target="_blank" rel="noopener">LinkedIn</a>
