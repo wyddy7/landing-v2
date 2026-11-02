@@ -17,4 +17,5 @@ Production code is under NDA.
 
 Next case: [Browser AI agent](https://wyddy.tech/case-browd.html)
 
-Get in touch: https://t.me/wyddy7
+Book a call (30 or 45 min): https://cal.com/makeev/call
+Or message me on Telegram: https://t.me/wyddy7

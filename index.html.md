@@ -115,7 +115,8 @@ answers follow-ups.
 Every system here is live and still running. If that's the kind of engineer
 your team is missing:
 
-- Telegram (primary): https://t.me/wyddy7
+- Book a call (primary, 30 or 45 min): https://cal.com/makeev/call
+- Telegram: https://t.me/wyddy7
 - Email: wyddy.work@gmail.com
 - GitHub: https://github.com/wyddy7
 - LinkedIn: https://www.linkedin.com/in/daniil-makeev/
